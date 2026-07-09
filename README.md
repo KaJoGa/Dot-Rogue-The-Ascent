@@ -1,11 +1,21 @@
-<div align="center">
+# Pixel Rogue
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Pixel Rogue is a top-down roguelite survival game where you fight waves of enemies, collect upgrades, and push through stages until the run ends. Each weapon changes how you approach combat, from wide melee swings to precision dagger crits and charged ranged attacks.
 
-  <h1>Built with AI Studio</h2>
+## How To Play
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+- Move with `WASD`.
+- Aim with the mouse.
+- Use melee and ranged attacks to clear enemies.
+- Dash with `Space`.
+- Pick up XP, gold, health, and ammo drops.
+- Skip a wave when the skip option becomes available.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Progression
 
-</div>
+During a run, defeating enemies gives XP and temporary upgrades. Clearing stages gives gold, and boss stages appear as you advance. Between runs, use earned currency and unlocked weapons to make future runs stronger.
+
+## Run Locally
+
+1. Install dependencies with `npm install`.
+2. Start the dev server with `npm run dev`.
