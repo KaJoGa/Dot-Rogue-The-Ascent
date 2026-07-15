@@ -32,6 +32,9 @@ interface AppState {
     showDropNotif: boolean;
     showExpNotif: boolean;
     autoSkipWave: boolean;
+    bgmVolume: number;
+    uiSfxVolume: number;
+    gameplaySfxVolume: number;
   };
   updateSettings: (partial: Partial<AppState['settings']>) => void;
 
@@ -75,6 +78,9 @@ export const useStore = create<AppState>()(
         showDropNotif: true,
         showExpNotif: true,
         autoSkipWave: false,
+        bgmVolume: 50,
+        uiSfxVolume: 100,
+        gameplaySfxVolume: 100,
       },
       updateSettings: (partial) => set((state) => ({ settings: { ...state.settings, ...partial } })),
 

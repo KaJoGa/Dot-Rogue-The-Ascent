@@ -281,8 +281,7 @@ export default function HUD() {
                    <h2 className="text-white text-2xl font-black italic tracking-widest uppercase">PAUSE</h2>
                    {/* button removed */}
                 </div>
-                
-                <div className="flex flex-col gap-4 mb-8">
+                            <div className="flex flex-col gap-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                    <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
                       <span>Damage Numbers</span>
                       <CustomCheckbox checked={settings.showDmgNotif} onChange={(checked) => updateSettings({ showDmgNotif: checked })} />
@@ -299,7 +298,77 @@ export default function HUD() {
                       <span>Exp Gains</span>
                       <CustomCheckbox checked={settings.showExpNotif} onChange={(checked) => updateSettings({ showExpNotif: checked })} />
                    </div>
-                 </div>
+                   
+                   <div className="mt-2 pt-4 border-t border-slate-800 flex flex-col gap-4 w-full">
+                     <span className="tracking-widest capitalize text-[11px] text-slate-500 font-bold font-mono">Audio Volume</span>
+                     
+                     <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
+                       <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
+                         <span className="tracking-widest capitalize">BGM Volume</span>
+                         <span className="font-bold text-indigo-400">{settings.bgmVolume ?? 50}%</span>
+                       </div>
+                       <div className="flex items-center gap-3">
+                         <span className="text-slate-600 text-[10px] font-bold">L</span>
+                         <input 
+                           type="range"
+                           min="0"
+                           max="100"
+                           value={settings.bgmVolume ?? 50}
+                           onChange={(e) => updateSettings({ bgmVolume: Number(e.target.value) })}
+                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           style={{
+                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.bgmVolume ?? 50}%, #1e293b ${settings.bgmVolume ?? 50}%, #1e293b 100%)`
+                           }}
+                         />
+                         <span className="text-slate-600 text-[10px] font-bold">H</span>
+                       </div>
+                     </div>
+
+                     <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
+                       <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
+                         <span className="tracking-widest capitalize">UI SFX Volume</span>
+                         <span className="font-bold text-indigo-400">{settings.uiSfxVolume ?? 100}%</span>
+                       </div>
+                       <div className="flex items-center gap-3">
+                         <span className="text-slate-600 text-[10px] font-bold">L</span>
+                         <input 
+                           type="range"
+                           min="0"
+                           max="100"
+                           value={settings.uiSfxVolume ?? 100}
+                           onChange={(e) => updateSettings({ uiSfxVolume: Number(e.target.value) })}
+                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           style={{
+                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.uiSfxVolume ?? 100}%, #1e293b ${settings.uiSfxVolume ?? 100}%, #1e293b 100%)`
+                           }}
+                         />
+                         <span className="text-slate-600 text-[10px] font-bold">H</span>
+                       </div>
+                     </div>
+
+                     <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
+                       <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
+                         <span className="tracking-widest capitalize">Gameplay SFX Volume</span>
+                         <span className="font-bold text-indigo-400">{settings.gameplaySfxVolume ?? 100}%</span>
+                       </div>
+                       <div className="flex items-center gap-3">
+                         <span className="text-slate-600 text-[10px] font-bold">L</span>
+                         <input 
+                           type="range"
+                           min="0"
+                           max="100"
+                           value={settings.gameplaySfxVolume ?? 100}
+                           onChange={(e) => updateSettings({ gameplaySfxVolume: Number(e.target.value) })}
+                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           style={{
+                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.gameplaySfxVolume ?? 100}%, #1e293b ${settings.gameplaySfxVolume ?? 100}%, #1e293b 100%)`
+                           }}
+                         />
+                         <span className="text-slate-600 text-[10px] font-bold">H</span>
+                       </div>
+                     </div>
+                   </div>
+                </div>
 
                 <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); toggleSettings(); }} className="w-full bg-[#7C3AED] hover:opacity-80 text-white py-3 rounded-lg font-bold shadow-lg mb-4 transition uppercase tracking-widest text-sm">Resume</button>
 

@@ -1,6 +1,8 @@
-import { GameStage } from '../store';
+import { useStore, GameStage } from '../store';
 
 let audioCtx: AudioContext | null = null;
+let uiGainNode: GainNode | null = null;
+let gameplayGainNode: GainNode | null = null;
 
 const getOscillator = () => {
     if (!audioCtx) {
@@ -9,7 +11,45 @@ const getOscillator = () => {
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
+    if (!uiGainNode) {
+        uiGainNode = audioCtx.createGain();
+        uiGainNode.connect(audioCtx.destination);
+    }
+    if (!gameplayGainNode) {
+        gameplayGainNode = audioCtx.createGain();
+        gameplayGainNode.connect(audioCtx.destination);
+    }
+    
+    // Dynamically update volumes on the sub-mix channels
+    try {
+        const settings = useStore.getState().settings;
+        uiGainNode.gain.setValueAtTime((settings.uiSfxVolume ?? 100) / 100, audioCtx.currentTime);
+        gameplayGainNode.gain.setValueAtTime((settings.gameplaySfxVolume ?? 100) / 100, audioCtx.currentTime);
+    } catch (e) {
+        uiGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+        gameplayGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+    }
+
     return audioCtx;
+};
+
+export const getDestination = (isUi: boolean = false): AudioNode => {
+    const ctx = getOscillator();
+    if (isUi) {
+        return uiGainNode || ctx.destination;
+    } else {
+        return gameplayGainNode || ctx.destination;
+    }
+};
+
+export const updateSfxVolumes = () => {
+    if (audioCtx && uiGainNode && gameplayGainNode) {
+        try {
+            const settings = useStore.getState().settings;
+            uiGainNode.gain.setValueAtTime((settings.uiSfxVolume ?? 100) / 100, audioCtx.currentTime);
+            gameplayGainNode.gain.setValueAtTime((settings.gameplaySfxVolume ?? 100) / 100, audioCtx.currentTime);
+        } catch (e) {}
+    }
 };
 
 export const playSabreSfx = (speedMod: number = 1) => {
@@ -53,11 +93,11 @@ export const playSabreSfx = (speedMod: number = 1) => {
         gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + duration);
         
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         
         noise.connect(filter);
         filter.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
         
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + duration);
@@ -108,11 +148,11 @@ export const playSabreReverseSfx = (speedMod: number = 1) => {
         gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + duration);
         
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         
         noise.connect(filter);
         filter.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
         
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + duration);
@@ -150,10 +190,10 @@ export const playBowSfx = () => {
         noiseGain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.05);
 
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
 
         noise.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
         
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + 0.15);
@@ -191,7 +231,7 @@ export const playLevelUpSfx = () => {
 
         osc1.connect(gain);
         osc2.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
 
         osc1.start(t);
         osc2.start(t);
@@ -211,7 +251,7 @@ export const playHoverSfx = () => {
         gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.1);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(true));
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + 0.1);
     } catch (e) {}
@@ -229,7 +269,7 @@ export const playClickSfx = () => {
         gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.01);
         gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.05);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(true));
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + 0.05);
     } catch (e) {}
@@ -284,11 +324,11 @@ export const playBossDropSfx = () => {
         // Connections
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
 
         noise.connect(noiseFilter);
         noiseFilter.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
 
         osc.start(t);
         osc.stop(t + 0.5);
@@ -314,7 +354,7 @@ export const playHitSfx = () => {
         noiseGain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.1);
 
         noise.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
         noise.start(ctx.currentTime);
         noise.stop(ctx.currentTime + 0.1);
     } catch (e) {}
@@ -333,7 +373,7 @@ export const playPlayerHitSfx = () => {
         gain.gain.linearRampToValueAtTime(0.2, t + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(t);
         osc.stop(t + 0.15);
     } catch (e) {}
@@ -352,7 +392,7 @@ export const playGoldPickupSfx = () => {
         gain.gain.linearRampToValueAtTime(0.08, t + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(t);
         osc.stop(t + 0.3);
     } catch (e) {}
@@ -380,7 +420,7 @@ export const playGameOverSfx = () => {
 
         osc1.connect(gain);
         osc2.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
 
         osc1.start(t);
         osc2.start(t);
@@ -405,7 +445,7 @@ export const playBossSpreadSfx = () => {
         gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4);
         
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(t);
         osc.stop(t + 0.4);
     } catch (e) {}
@@ -425,7 +465,7 @@ export const playPlasmaSfx = () => {
         gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.1);
         
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + 0.1);
     } catch(e) {}
@@ -451,7 +491,7 @@ export const playPlasmaCritSfx = () => {
         
         osc1.connect(gain);
         osc2.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc1.start(ctx.currentTime);
         osc2.start(ctx.currentTime);
         osc1.stop(ctx.currentTime + 0.15);
@@ -499,10 +539,10 @@ export const playHammerSmashSfx = (passiveActive: boolean = false) => {
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         noise.connect(noiseFilter);
         noiseFilter.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
+        noiseGain.connect(getDestination(false));
 
         osc.start(t);
         osc.stop(t + 0.42);
@@ -531,7 +571,7 @@ export const playHandCannonSfx = (charges: number = 1) => {
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(t);
         osc.stop(t + 0.24);
     } catch(e) {}
@@ -550,7 +590,7 @@ export const playHandCannonChargeSfx = () => {
         gain.gain.linearRampToValueAtTime(0.045, t + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.005, t + 0.14);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(getDestination(false));
         osc.start(t);
         osc.stop(t + 0.14);
     } catch(e) {}
@@ -586,7 +626,7 @@ export const startBossRapidFireLoopSfx = () => {
         rapidFireSource.buffer = buffer;
         rapidFireSource.loop = true;
         
-        rapidFireSource.connect(ctx.destination);
+        rapidFireSource.connect(getDestination(false));
         rapidFireSource.start();
     } catch (e) {}
 };
@@ -609,7 +649,34 @@ let playlistIndex: number = 0;
 let fadeInInterval: any = null;
 const TARGET_VOLUME = 0.4; // 40% volume for background music
 
-const fadeIn = (audio: HTMLAudioElement, durationMs: number = 3000, target: number = TARGET_VOLUME) => {
+export const getBgmTargetVolume = (): number => {
+    try {
+        const bgmVol = useStore.getState().settings.bgmVolume ?? 50;
+        return (bgmVol / 100) * TARGET_VOLUME;
+    } catch (e) {
+        return 0.5 * TARGET_VOLUME;
+    }
+};
+
+export const updateBgmVolume = () => {
+    if (currentBgm) {
+        try {
+            currentBgm.volume = getBgmTargetVolume();
+        } catch (e) {}
+    }
+};
+
+// Subscribe to store settings to handle dynamic volume changes immediately
+try {
+    useStore.subscribe((state) => {
+        updateSfxVolumes();
+        updateBgmVolume();
+    });
+} catch (e) {
+    console.warn('Failed to subscribe to volume settings changes:', e);
+}
+
+const fadeIn = (audio: HTMLAudioElement, durationMs: number = 3000) => {
     if (fadeInInterval) {
         clearInterval(fadeInInterval);
     }
@@ -618,7 +685,8 @@ const fadeIn = (audio: HTMLAudioElement, durationMs: number = 3000, target: numb
     fadeInInterval = setInterval(() => {
         const elapsed = performance.now() - startTime;
         const ratio = Math.min(1, elapsed / durationMs);
-        audio.volume = ratio * target;
+        const currentTarget = getBgmTargetVolume();
+        audio.volume = ratio * currentTarget;
         if (ratio >= 1) {
             clearInterval(fadeInInterval);
             fadeInInterval = null;
