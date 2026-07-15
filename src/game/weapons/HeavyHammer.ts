@@ -159,7 +159,7 @@ class HammerSmash extends BaseEntity {
 
         ctx.translate(headX, headY);
         ctx.rotate(this.angle);
-        ctx.shadowColor = '#f59e0b';
+        ctx.shadowColor = '#FBBF24';
         ctx.shadowBlur = this.passiveActive ? 14 : 0;
 
         const headGradient = ctx.createLinearGradient(-22, -22, 22, 22);
@@ -231,7 +231,7 @@ export class HeavyHammer extends Weapon {
             const moveSpeedOverflowDamage = Math.max(0, moveSpeedRaw - (this.moveSpeedCap ?? 250));
             const bonusDamage = excessSpeed * 100 + moveSpeedOverflowDamage;
             const totalDamage = player.damage + bonusDamage;
-            const passiveActive = totalDamage >= 300;
+            const passiveActive = totalDamage >= 200;
             const baseRadius = 25 + player.attackRange / 2 + (passiveActive ? 20 : 0);
             const attackDir = math.normalize(math.sub(game.mousePos, player.pos));
             const angle = Math.atan2(attackDir.y, attackDir.x);

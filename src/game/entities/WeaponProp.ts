@@ -111,7 +111,7 @@ export class WeaponProp extends BaseEntity {
           ctx.strokeRect(-8, -4, 48, 8);
 
           // Heavy metal head at the front
-          ctx.shadowColor = '#f59e0b';
+          ctx.shadowColor = '#FBBF24';
           ctx.shadowBlur = 8;
           ctx.fillStyle = '#475569';
           ctx.fillRect(34, -14, 30, 28);

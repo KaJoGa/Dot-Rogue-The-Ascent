@@ -297,7 +297,7 @@ export default function GameArea() {
       (window as any).currentPlayerHp = { current: state.player.hp, max: state.player.maxHp };
       const boss = state.entities.find((e: any) => e.type === 3); // 3 is Boss
       if (boss) {
-          (window as any).currentBossHp = { current: boss.hp, max: boss.maxHp };
+          (window as any).currentBossHp = { current: boss.hp, max: boss.maxHp, color: boss.color };
       } else {
           (window as any).currentBossHp = null;
       }
@@ -403,7 +403,7 @@ export default function GameArea() {
 
       // Background tiles
       const isSandboxRender = useStore.getState().isSandbox;
-      ctx.fillStyle = isSandboxRender ? '#f1f5f9' : '#1e1e2e'; // soft white for sandbox, void background otherwise
+      ctx.fillStyle = isSandboxRender ? '#f1f5f9' : '#120E1B'; // soft white for sandbox, void background otherwise
       ctx.fillRect(0, 0, view.logicalWidth, view.logicalHeight);
 
       if (!isSandboxRender) {
@@ -419,11 +419,11 @@ export default function GameArea() {
                // Procedural determinism based on coordinates
                const seed = (x * 73856093 ^ y * 19349663) % 100;
                if (seed < 80) {
-                  ctx.fillStyle = '#2a2a35'; // normal floor
+                  ctx.fillStyle = '#1F1830'; // normal floor
                } else if (seed < 95) {
-                  ctx.fillStyle = '#252530'; // darker floor
+                  ctx.fillStyle = '#1A1429'; // darker floor
                } else {
-                  ctx.fillStyle = '#30303c'; // lighter floor
+                  ctx.fillStyle = '#241B38'; // lighter floor
                }
                
                ctx.fillRect(x - camera.pos.x, y - camera.pos.y, tileSize - 1, tileSize - 1);
@@ -481,7 +481,7 @@ export default function GameArea() {
           const pct = Math.max(0, Math.min(1, 1 - (p.rangedCooldown / p.maxRangedCooldown)));
           const rangedState = (window as any).currentRangedWeaponState;
           const isHandCannon = rangedState?.id === 'hand_cannon';
-          const chargeColors = ['#38bdf8', '#22c55e', '#a78bfa', '#f59e0b', '#ef4444'];
+          const chargeColors = ['#22D3EE', '#34D399', '#7C3AED', '#FBBF24', '#F87171'];
           const chargeLevel = isHandCannon ? Math.max(1, Math.min(5, rangedState.charges || 1)) : 1;
           const isFullHandCannon = isHandCannon && rangedState.charges >= rangedState.maxCharges;
           const outlinePulse = isHandCannon && chargeLevel >= 3 ? Math.sin(state.runTime * 28) * 1.5 : 0;
@@ -499,7 +499,7 @@ export default function GameArea() {
           }
           ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
           ctx.fillRect(mX - barW/2 - 1 - Math.max(0, outlinePulse), mY - 1 - Math.max(0, outlinePulse), barW + 2 + Math.max(0, outlinePulse) * 2, barH + 2 + Math.max(0, outlinePulse) * 2);
-          ctx.fillStyle = isHandCannon ? chargeColors[chargeLevel - 1] : '#38bdf8';
+          ctx.fillStyle = isHandCannon ? chargeColors[chargeLevel - 1] : '#22D3EE';
           ctx.fillRect(mX - barW/2, mY, barW * pct, barH);
           if (isHandCannon) {
               ctx.strokeStyle = chargeColors[chargeLevel - 1];
@@ -607,7 +607,7 @@ export default function GameArea() {
        generateLevel(state);
        camera.pos.x = Math.max(0, Math.min(Math.max(0, state.width - camera.width), camera.pos.x));
        camera.pos.y = Math.max(0, Math.min(Math.max(0, state.height - camera.height), camera.pos.y));
-       state.addFloatingText(`Stage Cleared! +${reward} Gold`, {x: state.player.pos.x, y: state.player.pos.y - 40}, '#eab308');
+       state.addFloatingText(`Stage Cleared! +${reward} Gold`, {x: state.player.pos.x, y: state.player.pos.y - 40}, '#FBBF24');
     }
 
     animationId = requestAnimationFrame(loop);
@@ -635,7 +635,7 @@ export default function GameArea() {
     <div className="absolute inset-0 bg-black overflow-hidden">
        <canvas 
           ref={canvasRef} 
-          className="absolute inset-0 cursor-crosshair w-full h-full bg-[#1e1e2e]"
+          className="absolute inset-0 cursor-crosshair w-full h-full bg-[#120E1B]"
        />
     </div>
   );

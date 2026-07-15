@@ -23,7 +23,7 @@ export class Bow extends Weapon {
 
     attack(game: GameState, player: Player) {
         if (!game.onUseAmmo()) {
-            game.addFloatingText('OUT OF AMMO!', {x: player.pos.x, y: player.pos.y - 30}, '#ef4444');
+            game.addFloatingText('OUT OF AMMO!', {x: player.pos.x, y: player.pos.y - 30}, '#F87171');
             return;
         }
         playBowSfx();

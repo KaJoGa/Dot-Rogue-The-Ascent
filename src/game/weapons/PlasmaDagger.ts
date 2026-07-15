@@ -114,10 +114,10 @@ export class PlasmaDagger extends Weapon {
         
         ctx.beginPath();
         ctx.arc(x, y, outlineRadius, angle - this.weakpointIndicatorAngleWidth / 2, angle + this.weakpointIndicatorAngleWidth / 2);
-        ctx.strokeStyle = '#06b6d4'; // Cyan-500
+        ctx.strokeStyle = '#22D3EE'; // Cyan-500
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
-        ctx.shadowColor = '#06b6d4';
+        ctx.shadowColor = '#22D3EE';
         ctx.shadowBlur = 8;
         ctx.stroke();
         
@@ -218,7 +218,7 @@ export class PlasmaDagger extends Weapon {
                             if (isCrit) {
                                 playPlasmaCritSfx();
                                 // Add a text pop-up for crit
-                                game.addFloatingText('CRIT!', ent.pos, '#06b6d4', '', Math.floor(appliedDamage));
+                                game.addFloatingText('CRIT!', ent.pos, '#22D3EE', '', Math.floor(appliedDamage));
                                 
                                 // Weakpoints regenerate after being hit
                                 ent.weakpoint = Math.floor(Math.random() * 4);

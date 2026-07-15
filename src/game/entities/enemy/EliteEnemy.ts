@@ -7,7 +7,9 @@ import { Pickup } from '../Pickup';
 
 export class EliteEnemy extends Enemy {
   type = EntityType.ELITE_ENEMY;
-  color = '#3b82f6'; // blue-500
+  color = '#3B82F6';
+  outlineColor = '#93C5FD';
+  outlineWidth = 3;
   attackTimer = 0;
 
   constructor(pos: Vector2, level: number) {
@@ -21,20 +23,19 @@ export class EliteEnemy extends Enemy {
   }
 
   updateAI(dt: number, game: GameState) {
-    this.targetTimer -= dt;
     this.attackTimer -= dt;
     
     const distToPlayer = math.dist(game.player.pos, this.pos);
+    let desiredVel = {x: 0, y: 0};
 
-    if (this.targetTimer <= 0) {
-       this.targetTimer = 0.5;
-       if (distToPlayer > 300) {
-           const dir = math.normalize(math.sub(game.player.pos, this.pos));
-           this.vel = math.mul(dir, this.speed);
-       } else {
-           this.vel = math.lerpVector(this.vel, {x:0, y:0}, 0.5); // stop or slow down
-       }
+    // Only move towards player if further than 300 units
+    if (distToPlayer > 300) {
+        const dir = math.normalize(math.sub(game.player.pos, this.pos));
+        desiredVel = math.mul(dir, this.speed);
     }
+
+    // Smooth but snappy interpolation to remove sluggish delay
+    this.vel = math.lerpVector(this.vel, desiredVel, dt * 10);
     
     if (this.attackTimer <= 0) {
         this.attackTimer = 3.0;

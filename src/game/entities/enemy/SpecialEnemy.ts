@@ -6,7 +6,9 @@ import { Pickup } from '../Pickup';
 
 export class SpecialEnemy extends Enemy {
   type = EntityType.SPECIAL_ENEMY;
-  color = '#22c55e'; // green-500
+  color = '#22C55E';
+  outlineColor = '#86EFAC';
+  outlineWidth = 3;
 
   constructor(pos: Vector2, level: number) {
     super(pos, level);

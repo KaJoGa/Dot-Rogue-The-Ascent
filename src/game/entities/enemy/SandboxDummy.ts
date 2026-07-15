@@ -43,12 +43,12 @@ export class SandboxDummy extends BaseEntity {
     ctx.fillStyle = '#1e293b'; // slate-800
     ctx.fill();
     ctx.lineWidth = 3;
-    ctx.strokeStyle = '#ef4444'; // red-500
+    ctx.strokeStyle = '#F87171'; // red-500
     ctx.stroke();
 
     ctx.beginPath();
     ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
-    ctx.fillStyle = '#ef4444';
+    ctx.fillStyle = '#F87171';
     ctx.fill();
     
     ctx.beginPath();

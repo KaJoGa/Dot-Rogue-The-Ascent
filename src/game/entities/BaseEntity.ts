@@ -9,6 +9,10 @@ export class BaseEntity implements Entity {
   vel: Vector2 = { x: 0, y: 0 };
   radius: number = 10;
   color: string = '#ffffff';
+  outlineColor: string | null = null;
+  outlineWidth: number = 2;
+  auraColor: string | null = null;
+  auraRadius: number = 0;
   hp: number = 100;
   maxHp: number = 100;
   speed: number = 100;
@@ -36,11 +40,33 @@ export class BaseEntity implements Entity {
   }
 
   draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    const drawX = this.pos.x - camera.pos.x;
+    const drawY = this.pos.y - camera.pos.y;
+
+    if (this.auraColor) {
+      ctx.save();
+      const auraRad = this.auraRadius || this.radius * 1.5;
+      const grad = ctx.createRadialGradient(drawX, drawY, this.radius, drawX, drawY, auraRad);
+      grad.addColorStop(0, `${this.auraColor}aa`);
+      grad.addColorStop(1, `${this.auraColor}00`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(drawX, drawY, auraRad, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.pos.x - camera.pos.x, this.pos.y - camera.pos.y, this.radius, 0, Math.PI * 2);
+    ctx.arc(drawX, drawY, this.radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
+
+    if (this.outlineColor) {
+      ctx.strokeStyle = this.outlineColor;
+      ctx.lineWidth = this.outlineWidth;
+      ctx.stroke();
+    }
   }
 
   takeDamage(amt: number, game: GameState) {
@@ -50,7 +76,7 @@ export class BaseEntity implements Entity {
       playHitSfx();
     }
     this.hp -= amt;
-    game.spawnParticles(this.pos, 5, '#ff0000');
+    game.spawnParticles(this.pos, 5, '#F87171');
     
     // DMG notification
     const settings = (window as any).gameSettings ?? { showDmgNotif: true };

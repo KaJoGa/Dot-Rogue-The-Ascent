@@ -12,7 +12,7 @@ import { HandCannon } from '../../weapons/HandCannon';
 export class Player extends BaseEntity {
   type = EntityType.PLAYER;
   radius = 16;
-  color = '#4ade80';
+  color = '#34D399';
   dashCooldown = 0;
   maxDashCooldown = 1.25;
   dashActiveTimer = 0;
@@ -185,7 +185,7 @@ export class Player extends BaseEntity {
       const pct = 1 - (this.dashCooldown / this.maxDashCooldown);
       ctx.beginPath();
       ctx.arc(this.pos.x - camera.pos.x, this.pos.y - camera.pos.y, this.radius + 8, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct);
-      ctx.strokeStyle = '#4ade80';
+      ctx.strokeStyle = '#34D399';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.stroke();

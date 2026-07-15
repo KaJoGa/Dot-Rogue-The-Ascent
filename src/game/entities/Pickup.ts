@@ -15,7 +15,7 @@ export class Pickup extends BaseEntity {
     this.pType = pType;
     this.value = value;
     this.radius = pType === 2 || pType === 4 ? 8 : pType === 3 ? 5 : 4;
-    this.color = pType === 0 ? '#3b82f6' : pType === 1 ? '#eab308' : pType === 3 ? '#d97706' : pType === 4 ? '#22c55e' : '#ef4444';
+    this.color = pType === 0 ? '#22D3EE' : pType === 1 ? '#FBBF24' : pType === 3 ? '#d97706' : pType === 4 ? '#34D399' : '#F87171';
   }
 
   update(dt: number, game: GameState) {
@@ -39,19 +39,19 @@ export class Pickup extends BaseEntity {
          if (this.pType === 1) {
              playGoldPickupSfx();
              (game as any).onGainCurrency(this.value);
-             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#eab308', 'Gold', this.value);
+             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#FBBF24', 'Gold', this.value);
          }
          if (this.pType === 2) {
              const healAmt = Math.floor(game.player.maxHp * 0.50);
              game.player.heal(healAmt);
-             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#4ade80', 'HP', healAmt);
+             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#34D399', 'HP', healAmt);
          }
          if (this.pType === 3) {
              const isHandCannon = game.player?.weapons?.ranged?.id === 'hand_cannon';
              game.onGainAmmo(this.value);
              if (settings.showDropNotif) {
                 if (isHandCannon) {
-                   game.addFloatingText(`-${this.value}s Charge`, this.pos, '#38bdf8');
+                   game.addFloatingText(`-${this.value}s Charge`, this.pos, '#22D3EE');
                 } else {
                    game.addFloatingText('', this.pos, '#fb923c', 'Ammo', this.value);
                 }
@@ -60,7 +60,7 @@ export class Pickup extends BaseEntity {
          if (this.pType === 4) {
              const healAmt = Math.floor(game.player.maxHp * 0.50);
              game.player.heal(healAmt);
-             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#22c55e', 'HP', healAmt);
+             if (settings.showDropNotif) game.addFloatingText('', this.pos, '#34D399', 'HP', healAmt);
          }
      }
   }

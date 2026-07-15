@@ -1,3 +1,5 @@
+#!/bin/bash
+cat << 'CSS' > src/index.css
 @import "tailwindcss";
 
 @theme {
@@ -63,19 +65,4 @@
     animation: diagonalScroll 1s linear infinite;
   }
 }
-
-/* Custom Scrollbar Styles */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4a4066;
-  border-radius: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6b6480;
-}
-
+CSS

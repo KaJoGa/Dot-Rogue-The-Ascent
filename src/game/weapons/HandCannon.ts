@@ -6,11 +6,11 @@ import { BaseEntity } from '../entities/BaseEntity';
 import { playHandCannonSfx, playHandCannonChargeSfx } from '../audio';
 
 const CHARGE_CONFIG = [
-    { damage: 50, radius: 25, color: '#38bdf8' },
-    { damage: 100, radius: 50, color: '#22c55e' },
-    { damage: 150, radius: 100, color: '#a78bfa' },
-    { damage: 300, radius: 200, color: '#f59e0b' },
-    { damage: 500, radius: 400, color: '#ef4444' },
+    { damage: 50, radius: 25, color: '#22D3EE' },
+    { damage: 100, radius: 50, color: '#34D399' },
+    { damage: 150, radius: 100, color: '#7C3AED' },
+    { damage: 300, radius: 200, color: '#FBBF24' },
+    { damage: 500, radius: 400, color: '#F87171' },
 ];
 
 class HandCannonBlast extends BaseEntity {
@@ -187,7 +187,7 @@ export class HandCannon extends Weapon {
 
     attack(game: GameState, player: Player) {
         if (this.charges <= 0) {
-            game.addFloatingText('NO CHARGE!', { x: player.pos.x, y: player.pos.y - 30 }, '#ef4444');
+            game.addFloatingText('NO CHARGE!', { x: player.pos.x, y: player.pos.y - 30 }, '#F87171');
             return;
         }
 

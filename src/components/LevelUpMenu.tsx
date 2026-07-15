@@ -70,12 +70,12 @@ export default function LevelUpMenu() {
          initial={{ scale: 0.9, opacity: 0, y: 20 }}
          animate={{ scale: 1, opacity: 1, y: 0 }}
          key={`level-up-${runStats.pendingLevelUps}`} // Force re-animation
-         className="bg-slate-900 border border-slate-700 p-8 rounded-xl max-w-2xl w-full flex flex-col items-center shadow-2xl relative"
+         className="bg-[#1F1830] border border-[#362A52] p-8 rounded-xl max-w-2xl w-full flex flex-col items-center shadow-2xl relative"
        >
           <h2 className="text-3xl font-black text-white italic tracking-widest mb-2 uppercase">
             Level Up! {runStats.pendingLevelUps > 1 ? `(${runStats.pendingLevelUps - 1} pending)` : ''}
           </h2>
-          <p className="text-slate-400 mb-8 font-mono text-sm">Choose a boost for this run</p>
+          <p className="text-[#B4A9CC] mb-8 font-mono text-sm">Choose a boost for this run</p>
 
           <div className="flex w-full gap-4">
              {selectedOptions.map((opt, i) => (
@@ -86,7 +86,7 @@ export default function LevelUpMenu() {
                      playClickSfx();
                      applyRunUpgrade(opt.id, opt.amount);
                   }}
-                  className={`flex-1 flex flex-col items-center justify-center p-4 ${opt.rarity.bg} hover:bg-slate-800 border ${opt.rarity.border} rounded-lg transition-all group relative overflow-hidden text-center`}
+                  className={`flex-1 flex flex-col items-center justify-center p-4 ${opt.rarity.bg} hover:bg-[#2A2140] border ${opt.rarity.border} rounded-lg transition-all group relative overflow-hidden text-center`}
                 >
                    <div className={`mb-1 font-bold tracking-widest uppercase text-xs ${opt.rarity.color}`}>
                      {opt.rarity.name}

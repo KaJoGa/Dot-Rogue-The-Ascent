@@ -5,7 +5,8 @@ import { Pickup } from '../Pickup';
 
 export class Enemy extends BaseEntity {
   type = EntityType.ENEMY;
-  color = '#ef4444';
+  color = '#E24B4A';
+  outlineColor = '#7A1F1F';
   targetTimer = 0;
   baseSpeed: number;
 
@@ -25,15 +26,14 @@ export class Enemy extends BaseEntity {
   }
 
   /**
-   * Updates enemy ai logic, such as targeting the player.
+   * Updates enemy ai logic, such as targeting the player using Steering Behaviors.
    */
   updateAI(dt: number, game: GameState) {
-    this.targetTimer -= dt;
-    if (this.targetTimer <= 0) {
-       this.targetTimer = 0.5;
-       const dir = math.normalize(math.sub(game.player.pos, this.pos));
-       this.vel = math.mul(dir, this.speed);
-    }
+    const dir = math.normalize(math.sub(game.player.pos, this.pos));
+    const desiredVel = math.mul(dir, this.speed);
+
+    // Smooth but snappy interpolation to remove sluggish delay
+    this.vel = math.lerpVector(this.vel, desiredVel, dt * 10);
   }
 
   /**

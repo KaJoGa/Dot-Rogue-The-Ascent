@@ -9,7 +9,9 @@ import { Pickup } from '../Pickup';
 
 export class Boss extends Enemy {
   type = EntityType.BOSS;
-  color = '#991b1b';
+  color = '#9F1239';
+  auraColor = '#7C3AED';
+  auraRadius = 60;
   abilityTimer = 5;
   invulnTimer = 0;
   fireDelay = 0;
@@ -160,7 +162,9 @@ export class Boss extends Enemy {
      // Normal follow
      if (this.invulnTimer <= 0) {
          const dir = math.normalize(math.sub(game.player.pos, this.pos));
-         this.vel = math.mul(dir, this.speed);
+         const desiredVel = math.mul(dir, this.speed);
+         // Smooth but snappy interpolation to remove sluggish delay
+         this.vel = math.lerpVector(this.vel, desiredVel, dt * 10);
      }
      
       this.separateFromEnemies(dt, game);
@@ -197,13 +201,13 @@ export class Boss extends Enemy {
           const blink = Math.floor(this.spawnTimer * 10) % 2 === 0;
 
           if (!this.hasLanded && blink) {
-              ctx.strokeStyle = '#ef4444';
+              ctx.strokeStyle = '#F87171';
               ctx.lineWidth = 4;
               ctx.beginPath();
               ctx.arc(0, 0, impactRadius, 0, Math.PI * 2);
               ctx.stroke();
               
-              ctx.fillStyle = '#ef4444';
+              ctx.fillStyle = '#F87171';
               ctx.font = 'bold 16px sans-serif';
               ctx.textAlign = 'center';
               ctx.fillText("Warning, Boss Spawning", 0, -impactRadius - 10);
@@ -240,7 +244,7 @@ export class Boss extends Enemy {
               // draw invulnerability shield
               ctx.beginPath();
               ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2);
-              ctx.strokeStyle = '#fde047'; // yellow-300
+              ctx.strokeStyle = '#FBBF24'; // yellow-300
               ctx.lineWidth = 3;
               // blink shield
               if (Math.floor(this.spawnTimer * 10) % 2 === 0) {
@@ -260,7 +264,7 @@ export class Boss extends Enemy {
          // draw invulnerability shield
          ctx.beginPath();
          ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2);
-         ctx.strokeStyle = '#fde047'; // yellow-300
+         ctx.strokeStyle = '#FBBF24'; // yellow-300
          ctx.lineWidth = 3;
          // blink shield
          if (Math.floor(this.invulnTimer * 10) % 2 === 0) {
