@@ -67,6 +67,7 @@ export default function Hub() {
   const [isArmoryOpen, setIsArmoryOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isForgeHovered, setIsForgeHovered] = useState(false);
+  const [isArmoryHovered, setIsArmoryHovered] = useState(false);
 
   const handleStart = () => {
     resetRun();
@@ -133,7 +134,7 @@ export default function Hub() {
             onMouseEnter={() => { playHoverSfx(); setIsForgeHovered(true); }}
             onMouseLeave={() => setIsForgeHovered(false)}
             onClick={() => { playClickSfx(); setIsForgeOpen(true); }}
-            className="group relative flex flex-col items-start p-6 cursor-pointer"
+            className="group relative flex flex-col items-start p-6 cursor-pointer w-64"
          >
             <div 
                className="absolute inset-0 bg-[var(--hub-card-bg)]/90 border border-[var(--hub-forge)]/20 skew-x-[-10deg] group-hover:border-[var(--hub-forge)] group-hover:bg-[var(--hub-forge)]/10 transition-all duration-300"
@@ -152,11 +153,19 @@ export default function Hub() {
       {/* ARMORY Access Button (Right) */}
       <div className="absolute right-10 top-1/2 -translate-y-1/2 z-20">
          <button
-            onMouseEnter={() => playHoverSfx()}
+            onMouseEnter={() => { playHoverSfx(); setIsArmoryHovered(true); }}
+            onMouseLeave={() => setIsArmoryHovered(false)}
             onClick={() => { playClickSfx(); setIsArmoryOpen(true); }}
-            className="group relative flex flex-col items-end p-6 cursor-pointer text-right"
+            className="group relative flex flex-col items-end p-6 cursor-pointer text-right w-64"
          >
-            <div className="absolute inset-0 bg-[var(--hub-card-bg)]/90 border border-[var(--hub-armory)]/20 skew-x-[10deg] group-hover:border-[var(--hub-armory)]/60 group-hover:bg-[var(--hub-armory)]/10 transition-all duration-300 shadow-[inset_0_0_15px_rgba(16,185,129,0.05)] group-hover:shadow-[inset_0_0_30px_rgba(16,185,129,0.4)]"></div>
+            <div 
+               className="absolute inset-0 bg-[var(--hub-card-bg)]/90 border border-[var(--hub-armory)]/20 skew-x-[10deg] group-hover:border-[var(--hub-armory)] group-hover:bg-[var(--hub-armory)]/10 transition-all duration-300"
+               style={{
+                  boxShadow: isArmoryHovered
+                     ? `inset 0 0 30px ${getRgba(HUB_THEME.armoryColor, 0.4)}`
+                     : `inset 0 0 15px ${getRgba(HUB_THEME.armoryColor, 0.05)}`
+               }}
+            ></div>
             <span className="relative text-[var(--hub-armory)]/70 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[var(--hub-armory)] transition-colors">LOADOUT &gt;&gt;</span>
             <span className="relative text-white font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-emerald-50">ARMORY</span>
             <div className="relative w-12 h-1 bg-[var(--hub-armory)]/50 mt-3 group-hover:w-full group-hover:bg-[var(--hub-armory)] transition-all duration-500"></div>

@@ -78,6 +78,7 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                         <div className="flex flex-col gap-3">
                            <div 
                               onClick={() => { playClickSfx(); selectMelee('sabre'); }}
+                              onMouseEnter={() => playHoverSfx()}
                               className={`p-4 border-l-2 cursor-pointer transition-all duration-300 relative overflow-hidden flex justify-between items-center group
                                 ${selectedWeapons.melee === 'sabre' 
                                   ? 'bg-[var(--armory-primary)]/10 border-[var(--armory-primary)] shadow-[inset_0_0_20px_var(--armory-primary)]/10' 
@@ -94,6 +95,7 @@ export default function Armory({ onClose }: { onClose: () => void }) {
 
                            <div 
                               onClick={() => { playClickSfx(); selectMelee('plasma_dagger'); }}
+                              onMouseEnter={() => playHoverSfx()}
                               className={`p-4 border-l-2 cursor-pointer transition-all duration-300 relative overflow-hidden flex justify-between items-center group
                                 ${selectedWeapons.melee === 'plasma_dagger' 
                                   ? 'bg-[var(--armory-primary)]/10 border-[var(--armory-primary)] shadow-[inset_0_0_20px_var(--armory-primary)]/10' 
@@ -110,6 +112,7 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                            
                            <div 
                               onClick={() => { playClickSfx(); selectMelee('heavy_hammer'); }}
+                              onMouseEnter={() => playHoverSfx()}
                               className={`p-4 border-l-2 cursor-pointer transition-all duration-300 relative overflow-hidden flex justify-between items-center group
                                 ${selectedWeapons.melee === 'heavy_hammer' 
                                   ? 'bg-[var(--armory-primary)]/10 border-[var(--armory-primary)] shadow-[inset_0_0_20px_var(--armory-primary)]/10' 
@@ -132,6 +135,7 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                         <div className="flex flex-col gap-3">
                            <div 
                               onClick={() => { if (!isHammerEquipped) { playClickSfx(); setSelectedWeapon('ranged', 'bow'); } }}
+                              onMouseEnter={() => { if (!isHammerEquipped) playHoverSfx(); }}
                               className={`p-4 border-l-2 transition-all duration-300 relative overflow-hidden flex justify-between items-center group
                                 ${isHammerEquipped
                                   ? 'bg-[var(--armory-bg-dark)]/80 border-slate-800 opacity-50 grayscale cursor-not-allowed'
@@ -150,6 +154,7 @@ export default function Armory({ onClose }: { onClose: () => void }) {
 
                            <div 
                               onClick={() => { if (!isHammerEquipped) { playClickSfx(); setSelectedWeapon('ranged', 'hand_cannon'); } }}
+                              onMouseEnter={() => { if (!isHammerEquipped) playHoverSfx(); }}
                               className={`p-4 border-l-2 transition-all duration-300 relative overflow-hidden flex justify-between items-center group
                                 ${isHammerEquipped
                                   ? 'bg-[var(--armory-bg-dark)]/80 border-slate-800 opacity-50 grayscale cursor-not-allowed'

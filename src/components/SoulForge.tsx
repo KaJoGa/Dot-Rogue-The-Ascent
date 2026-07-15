@@ -102,6 +102,7 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                              animate={{ opacity: 1, y: 0 }}
                              transition={{ delay: idx * 0.05 }}
                              key={stat.id} 
+                             onMouseEnter={() => playHoverSfx()}
                              className={`relative p-5 flex flex-col gap-4 group transition-all duration-300
                               ${isMaxed ? 'bg-[var(--forge-bg-dark)] border-l-2 border-cyan-500/70' 
                                 : canAfford ? 'bg-[var(--forge-bg-dark)] border-l-2 border-[var(--forge-primary)]/70 hover:bg-[var(--forge-bg-dark)] hover:translate-x-1' 
