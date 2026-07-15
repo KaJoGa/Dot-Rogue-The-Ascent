@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore, GameStage } from '../store';
 import { motion, AnimatePresence } from 'motion/react';
-import { playHoverSfx, playClickSfx } from '../game/audio';
+import { playHoverSfx, playClickSfx, shuffleInGamePlaylist } from '../game/audio';
 import { Settings as SettingsIcon } from 'lucide-react';
 import Armory from './Armory';
 import SoulForge, { FORGE_THEME } from './SoulForge';
@@ -72,6 +72,7 @@ export default function Hub() {
     resetRun();
     setBossRush(false);
     setSandbox(false);
+    shuffleInGamePlaylist();
     setStage(GameStage.PLAYING);
   };
 

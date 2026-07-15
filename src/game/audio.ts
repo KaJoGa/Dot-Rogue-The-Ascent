@@ -1,3 +1,5 @@
+import { GameStage } from '../store';
+
 let audioCtx: AudioContext | null = null;
 
 const getOscillator = () => {
@@ -597,4 +599,138 @@ export const stopBossRapidFireLoopSfx = () => {
             rapidFireSource = null;
         }
     } catch (e) {}
+};
+
+// --- BACKGROUND MUSIC (BGM) MANAGER ---
+let currentBgm: HTMLAudioElement | null = null;
+let currentBgmType: 'HUB' | 'IN_GAME' | 'BOSS' | null = null;
+let playlist: string[] = [];
+let playlistIndex: number = 0;
+let fadeInInterval: any = null;
+const TARGET_VOLUME = 0.4; // 40% volume for background music
+
+const fadeIn = (audio: HTMLAudioElement, durationMs: number = 3000, target: number = TARGET_VOLUME) => {
+    if (fadeInInterval) {
+        clearInterval(fadeInInterval);
+    }
+    audio.volume = 0;
+    const startTime = performance.now();
+    fadeInInterval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        const ratio = Math.min(1, elapsed / durationMs);
+        audio.volume = ratio * target;
+        if (ratio >= 1) {
+            clearInterval(fadeInInterval);
+            fadeInInterval = null;
+        }
+    }, 50);
+};
+
+export const stopAllBgm = () => {
+    if (fadeInInterval) {
+        clearInterval(fadeInInterval);
+        fadeInInterval = null;
+    }
+    if (currentBgm) {
+        try {
+            currentBgm.pause();
+            currentBgm.currentTime = 0;
+            currentBgm.onended = null;
+        } catch (e) {
+            console.warn('Failed to stop BGM:', e);
+        }
+        currentBgm = null;
+    }
+    currentBgmType = null;
+};
+
+export const shuffleInGamePlaylist = () => {
+    const tracks = [
+        '/music/[In_Game_BGM_1]Waiting_for_a_Challenger.mp3',
+        '/music/[In_Game_BGM_2]Save_Point_Morning.mp3',
+        '/music/[In_Game_BGM_3]Morning_at_the_Gate.mp3'
+    ];
+    // Fisher-Yates shuffle
+    for (let i = tracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = tracks[i];
+        tracks[i] = tracks[j];
+        tracks[j] = temp;
+    }
+    playlist = tracks;
+    playlistIndex = 0;
+    console.log('Shuffled in-game BGM playlist:', playlist);
+};
+
+export const updateBgmState = (stage: GameStage, level: number) => {
+    try {
+        if (stage === GameStage.HUB) {
+            if (currentBgmType === 'HUB') return;
+            stopAllBgm();
+            
+            const audio = new Audio('/music/[Hub_BGM]Ready_for_the_First_Level.mp3');
+            audio.loop = true;
+            currentBgm = audio;
+            currentBgmType = 'HUB';
+            
+            audio.play().catch(err => console.log('BGM playback blocked/failed', err));
+            fadeIn(audio);
+        } else if (stage === GameStage.PLAYING || stage === GameStage.LEVEL_UP) {
+            const isBoss = level % 10 === 0;
+            if (isBoss) {
+                if (currentBgmType === 'BOSS') return;
+                stopAllBgm();
+                
+                const audio = new Audio('/music/[Boss_Fight_BGM_1]The_Last_Quarter.mp3');
+                audio.loop = true;
+                currentBgm = audio;
+                currentBgmType = 'BOSS';
+                
+                audio.play().catch(err => console.log('BGM playback blocked/failed', err));
+                fadeIn(audio);
+            } else {
+                if (currentBgmType === 'IN_GAME') return;
+                stopAllBgm();
+                
+                if (playlist.length === 0) {
+                    shuffleInGamePlaylist();
+                }
+                
+                currentBgmType = 'IN_GAME';
+                
+                const playPlaylistTrack = () => {
+                    if (fadeInInterval) {
+                        clearInterval(fadeInInterval);
+                        fadeInInterval = null;
+                    }
+                    if (currentBgm) {
+                        try {
+                            currentBgm.pause();
+                            currentBgm.currentTime = 0;
+                            currentBgm.onended = null;
+                        } catch (e) {}
+                    }
+                    
+                    const trackPath = playlist[playlistIndex];
+                    const audio = new Audio(trackPath);
+                    audio.loop = false;
+                    audio.onended = () => {
+                        playlistIndex = (playlistIndex + 1) % playlist.length;
+                        playPlaylistTrack();
+                    };
+                    
+                    currentBgm = audio;
+                    audio.play().catch(err => console.log('BGM playlist playback blocked/failed', err));
+                    fadeIn(audio);
+                };
+                
+                playPlaylistTrack();
+            }
+        } else {
+            // GAME_OVER, VICTORY, etc.
+            stopAllBgm();
+        }
+    } catch (e) {
+        console.warn('Error in updateBgmState:', e);
+    }
 };

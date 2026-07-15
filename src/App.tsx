@@ -10,9 +10,11 @@ import LevelUpMenu from './components/LevelUpMenu';
 import GameOver from './components/GameOver';
 import GameArea from './game/GameArea';
 import { useStore, GameStage } from './store';
+import { updateBgmState } from './game/audio';
 
 export default function App() {
   const stage = useStore((state) => state.stage);
+  const level = useStore((state) => state.runStats.level);
   const [scale, setScale] = useState(1);
   const BASE_WIDTH = 1280;
   const BASE_HEIGHT = 720;
@@ -42,6 +44,10 @@ export default function App() {
        document.removeEventListener('contextmenu', handleContextMenu);
     };
   }, []);
+
+  useEffect(() => {
+    updateBgmState(stage, level);
+  }, [stage, level]);
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative select-none flex items-center justify-center">

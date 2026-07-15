@@ -1,6 +1,6 @@
-# Dot Rogue: The Ascent
+# Pixel Rogue
 
-Dot Rogue is a top-down roguelite survival game where you fight waves of dot-like enemies, collect upgrades, and push through stages until the run ends. Each weapon changes how you approach combat, from wide melee swings to precision dagger crits and charged ranged attacks.
+Pixel Rogue is a top-down roguelite survival game where you fight waves of enemies, collect upgrades, and push through stages until the run ends. Each weapon changes how you approach combat, from wide melee swings to precision dagger crits and charged ranged attacks.
 
 ## How To Play
 
