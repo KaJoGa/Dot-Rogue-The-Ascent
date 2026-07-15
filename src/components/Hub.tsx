@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useStore, GameStage } from '../store';
 import { motion, AnimatePresence } from 'motion/react';
 import { playHoverSfx, playClickSfx, shuffleInGamePlaylist } from '../game/audio';
-import { Settings as SettingsIcon } from 'lucide-react';
+import { Settings as SettingsIcon, Volume1, Volume2 } from 'lucide-react';
 import Armory from './Armory';
 import SoulForge, { FORGE_THEME } from './SoulForge';
 
@@ -274,7 +274,7 @@ export default function Hub() {
                           <span className="text-xs font-bold text-indigo-400">{settings.bgmVolume ?? 50}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-600 text-[10px] font-bold">L</span>
+                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
                           <input 
                             type="range"
                             min="0"
@@ -286,7 +286,7 @@ export default function Hub() {
                               background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.bgmVolume ?? 50}%, #1e293b ${settings.bgmVolume ?? 50}%, #1e293b 100%)`
                             }}
                           />
-                          <span className="text-slate-600 text-[10px] font-bold">H</span>
+                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
                         </div>
                       </div>
 
@@ -296,7 +296,7 @@ export default function Hub() {
                           <span className="text-xs font-bold text-indigo-400">{settings.uiSfxVolume ?? 100}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-600 text-[10px] font-bold">L</span>
+                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
                           <input 
                             type="range"
                             min="0"
@@ -308,7 +308,7 @@ export default function Hub() {
                               background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.uiSfxVolume ?? 100}%, #1e293b ${settings.uiSfxVolume ?? 100}%, #1e293b 100%)`
                             }}
                           />
-                          <span className="text-slate-600 text-[10px] font-bold">H</span>
+                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
                         </div>
                       </div>
 
@@ -318,7 +318,7 @@ export default function Hub() {
                           <span className="text-xs font-bold text-indigo-400">{settings.gameplaySfxVolume ?? 100}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-600 text-[10px] font-bold">L</span>
+                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
                           <input 
                             type="range"
                             min="0"
@@ -330,7 +330,7 @@ export default function Hub() {
                               background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.gameplaySfxVolume ?? 100}%, #1e293b ${settings.gameplaySfxVolume ?? 100}%, #1e293b 100%)`
                             }}
                           />
-                          <span className="text-slate-600 text-[10px] font-bold">H</span>
+                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
                         </div>
                       </div>
                     </div>
