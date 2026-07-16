@@ -1,15 +1,16 @@
-# Pixel Rogue
+# Dot Rogue
 
-Pixel Rogue is a top-down roguelite survival game where you fight waves of enemies, collect upgrades, and push through stages until the run ends. Each weapon changes how you approach combat, from wide melee swings to precision dagger crits and charged ranged attacks.
+Dot Rogue is a top-down roguelite survival game where you fight waves of Dot-like enemies, collect upgrades, and push through stages until the run ends. Each weapon changes how you approach combat, from wide melee swings to precision dagger crits and charged ranged attacks.
 
 ## How To Play
 
 - Move with `WASD`.
 - Aim with the mouse.
+- Shoot ranged weapon with `Right Click`.
 - Use melee and ranged attacks to clear enemies.
 - Dash with `Space`.
 - Pick up XP, gold, health, and ammo drops.
-- Skip a wave when the skip option becomes available.
+- Skip a wave when the skip option becomes available for faster gameplay.
 
 ## Progression
 
