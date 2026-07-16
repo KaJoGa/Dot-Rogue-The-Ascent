@@ -1,6 +1,6 @@
 import { GameState, Vector2, Camera } from '../types';
 import { Player } from '../entities/player/Player';
-import { Weapon } from './Weapon';
+import { Weapon, WeaponMetadata } from './Weapon';
 import { math } from '../utils';
 import { playSabreSfx, playSabreReverseSfx } from '../audio';
 import { MeleeSlash } from '../entities/MeleeSlash';
@@ -8,6 +8,19 @@ import { BaseEntity } from '../entities/BaseEntity';
 import { EntityType } from '../types';
 
 export class Sabre extends Weapon {
+    static readonly metadata: WeaponMetadata = {
+        name: 'A SABRE',
+        type: 'Melee',
+        damage: '15',
+        damageVal: 15,
+        range: 'Medium (70px)',
+        rangeVal: 70,
+        speed: 'Normal (0.85s)',
+        speedVal: 0.85,
+        special: 'Fires dual swing paths when attack speed is capped.',
+        color: '#10b981',
+    };
+
     id = 'sabre';
     baseDamage = 15;
     baseRange = 10;

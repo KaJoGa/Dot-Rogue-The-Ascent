@@ -33,6 +33,8 @@ export class Player extends BaseEntity {
 
   /**
    * Initializes player stats and starting weapons using global store upgrades.
+   * Dynamically constructs equipped weapon classes (Sabre, PlasmaDagger, HeavyHammer, Bow, HandCannon)
+   * based on the active selection in the user's permanent loadout.
    */
   constructor(pos: Vector2, stats: any) {
     super(pos);
@@ -59,6 +61,13 @@ export class Player extends BaseEntity {
     this.hp = this.maxHp;
   }
 
+  /**
+   * Calculates current player stats by combining standard baseline stats,
+   * permanent upgrades from the hub shop, in-run levels/upgrades, and weapon-specific modifiers.
+   * Ensures HP changes do not exceed new maximum capacities.
+   * 
+   * @param preserveHp If true, increments current HP proportionally when maximum HP increases.
+   */
   private recalculateStats(preserveHp: boolean = true) {
     const targetMaxHp = 100 + this.stats.upgrades.health * 50 + this.stats.runUpgrades.hp;
     if (preserveHp && targetMaxHp > this.maxHp) {
@@ -78,6 +87,7 @@ export class Player extends BaseEntity {
   /**
    * Updates player stats, handles input for movement and dashing, 
    * applies health regeneration, and updates held weapons.
+   * Detects hot-swapping from the armory UI and dynamically recreates weapon instances.
    */
   update(dt: number, game: GameState) {
     this.stats = useStore.getState();
@@ -179,6 +189,14 @@ export class Player extends BaseEntity {
     super.update(dt, game);
   }
 
+  /**
+   * Renders the player entity on the canvas.
+   * If the dash action is on cooldown, draws an elegant radial cooldown ring indicator
+   * around the player's avatar.
+   * 
+   * @param ctx The canvas 2D rendering context.
+   * @param camera The gameplay camera tracking the viewport coordinate system.
+   */
   draw(ctx: CanvasRenderingContext2D, camera: Camera) {
     super.draw(ctx, camera);
     if (this.dashCooldown > 0) {
@@ -199,6 +217,13 @@ export class Player extends BaseEntity {
     }
   }
 
+  /**
+   * Inflicts damage onto the player's health pool if they are not currently invulnerable.
+   * Grants a short window of post-damage invulnerability frames (i-frames) to prevent rapid melting.
+   * 
+   * @param amt Amount of raw damage points received.
+   * @param game The current global GameState.
+   */
   takeDamage(amt: number, game: GameState) {
     if (this.invulnTimer > 0) return;
     super.takeDamage(amt, game);

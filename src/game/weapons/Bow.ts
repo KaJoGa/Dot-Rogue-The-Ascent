@@ -1,11 +1,24 @@
 import { GameState } from '../types';
 import { Player } from '../entities/player/Player';
-import { Weapon } from './Weapon';
+import { Weapon, WeaponMetadata } from './Weapon';
 import { math } from '../utils';
 import { playBowSfx } from '../audio';
 import { Projectile } from '../entities/Projectile';
 
 export class Bow extends Weapon {
+    static readonly metadata: WeaponMetadata = {
+        name: 'A BOW',
+        type: 'Ranged',
+        damage: '12',
+        damageVal: 12,
+        range: 'Long (350px)',
+        rangeVal: 350,
+        speed: 'Medium (0.45s)',
+        speedVal: 0.45,
+        special: 'Rapid fire on hold. Consumes 1 Ammo per shot.',
+        color: '#cbd5e1',
+    };
+
     id = 'bow';
     update(dt: number, game: GameState, player: Player) {
         (window as any).currentRangedWeaponState = null;

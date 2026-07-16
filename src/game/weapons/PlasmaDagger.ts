@@ -1,4 +1,4 @@
-import { Weapon } from './Weapon';
+import { Weapon, WeaponMetadata } from './Weapon';
 import { GameState, Vector2, EntityType, Camera } from '../types';
 import { Player } from '../entities/player/Player';
 import { math } from '../utils';
@@ -7,6 +7,19 @@ import { MeleeSlash } from '../entities/MeleeSlash';
 import { BaseEntity } from '../entities/BaseEntity';
 
 export class PlasmaDagger extends Weapon {
+    static readonly metadata: WeaponMetadata = {
+        name: 'PLASMA DAGGER',
+        type: 'Melee',
+        damage: '1 - 25',
+        damageVal: 13,
+        range: 'Short (35px)',
+        rangeVal: 35,
+        speed: 'Fast (0.15s)',
+        speedVal: 0.15,
+        special: 'Agile Momentum (-0.5s dash CD). Weakpoint hits deal 1.9x critical damage.',
+        color: '#34d399',
+    };
+
     id = 'plasma_dagger';
     baseDamage = 1;
     private readonly nonCritDamageMultiplier = 0.7;

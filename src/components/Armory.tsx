@@ -3,6 +3,12 @@ import { motion } from 'motion/react';
 import { playHoverSfx, playClickSfx } from '../game/audio';
 import { useStore } from '../store';
 import { Lock, ChevronsDown } from 'lucide-react';
+import { Sabre } from '../game/weapons/Sabre';
+import { PlasmaDagger } from '../game/weapons/PlasmaDagger';
+import { HeavyHammer } from '../game/weapons/HeavyHammer';
+import { Bow } from '../game/weapons/Bow';
+import { HandCannon } from '../game/weapons/HandCannon';
+import { WeaponMetadata } from '../game/weapons/Weapon';
 
 // Define local theme colors to manage them cleanly in one place
 const ARMORY_THEME = {
@@ -12,80 +18,12 @@ const ARMORY_THEME = {
   muted: '#6B6480',           // Muted greyish purple for locked elements
 };
 
-interface WeaponStats {
-  name: string;
-  type: 'Melee' | 'Ranged' | 'Locked';
-  damage: string;
-  damageVal: number;
-  range: string;
-  rangeVal: number;
-  speed: string;
-  speedVal: number;
-  special: string;
-  color: string;
-}
-
-const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
-  sabre: {
-    name: 'A SABRE',
-    type: 'Melee',
-    damage: '15',
-    damageVal: 15,
-    range: 'Medium (70px)',
-    rangeVal: 70,
-    speed: 'Normal (0.85s)',
-    speedVal: 0.85,
-    special: 'Fires dual swing paths when attack speed is capped.',
-    color: '#10b981',
-  },
-  plasma_dagger: {
-    name: 'PLASMA DAGGER',
-    type: 'Melee',
-    damage: '1 - 25',
-    damageVal: 13,
-    range: 'Short (35px)',
-    rangeVal: 35,
-    speed: 'Fast (0.15s)',
-    speedVal: 0.15,
-    special: 'Agile Momentum (-0.5s dash CD). Weakpoint hits deal 1.9x critical damage.',
-    color: '#34d399',
-  },
-  heavy_hammer: {
-    name: 'HEAVY HAMMER',
-    type: 'Melee',
-    damage: '20',
-    damageVal: 20,
-    range: 'Medium (70px)',
-    rangeVal: 70,
-    speed: 'Slow (1.2s)',
-    speedVal: 1.2,
-    special: 'Creates debris shockwave for AoE. Disables Ranged weapon equip.',
-    color: '#f59e0b',
-  },
-  bow: {
-    name: 'A BOW',
-    type: 'Ranged',
-    damage: '12',
-    damageVal: 12,
-    range: 'Long (350px)',
-    rangeVal: 350,
-    speed: 'Medium (0.45s)',
-    speedVal: 0.45,
-    special: 'Rapid fire on hold. Consumes 1 Ammo per shot.',
-    color: '#cbd5e1',
-  },
-  hand_cannon: {
-    name: 'HAND CANNON',
-    type: 'Ranged',
-    damage: '50 - 500',
-    damageVal: 275,
-    range: 'Gigantic (500px)',
-    rangeVal: 500,
-    speed: 'Charged (0.3s-1.5s)',
-    speedVal: 0.9,
-    special: 'Hold to charge. Multi-tier blasts deal extreme AoE damage but use up to 5 Ammo.',
-    color: '#a78bfa',
-  },
+const WEAPON_STATS_DATA: Record<string, WeaponMetadata> = {
+  sabre: Sabre.metadata,
+  plasma_dagger: PlasmaDagger.metadata,
+  heavy_hammer: HeavyHammer.metadata,
+  bow: Bow.metadata,
+  hand_cannon: HandCannon.metadata,
   akimbo: {
     name: 'AKIMBO',
     type: 'Locked',

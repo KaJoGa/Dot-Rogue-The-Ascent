@@ -1,6 +1,6 @@
 import { GameState, Vector2, Camera, EntityType } from '../types';
 import { Player } from '../entities/player/Player';
-import { Weapon } from './Weapon';
+import { Weapon, WeaponMetadata } from './Weapon';
 import { math, checkCollision } from '../utils';
 import { BaseEntity } from '../entities/BaseEntity';
 import { playHandCannonSfx, playHandCannonChargeSfx } from '../audio';
@@ -150,6 +150,19 @@ class HandCannonShell extends BaseEntity {
 }
 
 export class HandCannon extends Weapon {
+    static readonly metadata: WeaponMetadata = {
+        name: 'HAND CANNON',
+        type: 'Ranged',
+        damage: '50 - 500',
+        damageVal: 275,
+        range: 'Gigantic (500px)',
+        rangeVal: 500,
+        speed: 'Charged (0.3s-1.5s)',
+        speedVal: 0.9,
+        special: 'Hold to charge. Multi-tier blasts deal extreme AoE damage but use up to 5 Ammo.',
+        color: '#a78bfa',
+    };
+
     id = 'hand_cannon';
     maxCharges = 5;
     charges = 1;

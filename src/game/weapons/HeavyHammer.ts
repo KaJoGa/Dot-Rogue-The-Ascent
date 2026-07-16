@@ -1,6 +1,6 @@
 import { GameState, Vector2, Camera, EntityType } from '../types';
 import { Player } from '../entities/player/Player';
-import { Weapon } from './Weapon';
+import { Weapon, WeaponMetadata } from './Weapon';
 import { math } from '../utils';
 import { BaseEntity } from '../entities/BaseEntity';
 import { Projectile } from '../entities/Projectile';
@@ -210,6 +210,19 @@ class HammerSmash extends BaseEntity {
 }
 
 export class HeavyHammer extends Weapon {
+    static readonly metadata: WeaponMetadata = {
+        name: 'HEAVY HAMMER',
+        type: 'Melee',
+        damage: '20',
+        damageVal: 20,
+        range: 'Medium (70px)',
+        rangeVal: 70,
+        speed: 'Slow (1.2s)',
+        speedVal: 1.2,
+        special: 'Creates debris shockwave for AoE. Disables Ranged weapon equip.',
+        color: '#f59e0b',
+    };
+
     id = 'heavy_hammer';
     baseDamage = 20;
     baseRange = 10;

@@ -6,3 +6,4 @@ coverage/
 *.log
 .env*
 !.env.example
+PROJECT_DOCS.md

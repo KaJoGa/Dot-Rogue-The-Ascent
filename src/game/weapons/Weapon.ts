@@ -1,6 +1,19 @@
 import { GameState, Vector2, Camera } from '../types';
 import { Player } from '../entities/player/Player';
 
+export interface WeaponMetadata {
+  name: string;
+  type: 'Melee' | 'Ranged' | 'Locked';
+  damage: string;
+  damageVal: number;
+  range: string;
+  rangeVal: number;
+  speed: string;
+  speedVal: number;
+  special: string;
+  color: string;
+}
+
 export abstract class Weapon {
     id: string = 'weapon';
     baseDamage: number = 0;
