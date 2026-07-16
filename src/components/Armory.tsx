@@ -16,8 +16,11 @@ interface WeaponStats {
   name: string;
   type: 'Melee' | 'Ranged' | 'Locked';
   damage: string;
+  damageVal: number;
   range: string;
+  rangeVal: number;
   speed: string;
+  speedVal: number;
   special: string;
   color: string;
 }
@@ -27,8 +30,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'A SABRE',
     type: 'Melee',
     damage: '15',
+    damageVal: 15,
     range: 'Medium (70px)',
-    speed: 'Fast (0.85s)',
+    rangeVal: 70,
+    speed: 'Normal (0.85s)',
+    speedVal: 0.85,
     special: 'Fires dual swing paths when attack speed is capped.',
     color: '#10b981',
   },
@@ -36,8 +42,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'PLASMA DAGGER',
     type: 'Melee',
     damage: '1 - 25',
+    damageVal: 13,
     range: 'Short (35px)',
-    speed: 'V. Fast (0.15s)',
+    rangeVal: 35,
+    speed: 'Fast (0.15s)',
+    speedVal: 0.15,
     special: 'Agile Momentum (-0.5s dash CD). Weakpoint hits deal 1.9x critical damage.',
     color: '#34d399',
   },
@@ -45,8 +54,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'HEAVY HAMMER',
     type: 'Melee',
     damage: '20',
+    damageVal: 20,
     range: 'Medium (70px)',
+    rangeVal: 70,
     speed: 'Slow (1.2s)',
+    speedVal: 1.2,
     special: 'Creates debris shockwave for AoE. Disables Ranged weapon equip.',
     color: '#f59e0b',
   },
@@ -54,8 +66,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'A BOW',
     type: 'Ranged',
     damage: '12',
+    damageVal: 12,
     range: 'Long (350px)',
+    rangeVal: 350,
     speed: 'Medium (0.45s)',
+    speedVal: 0.45,
     special: 'Rapid fire on hold. Consumes 1 Ammo per shot.',
     color: '#cbd5e1',
   },
@@ -63,8 +78,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'HAND CANNON',
     type: 'Ranged',
     damage: '50 - 500',
+    damageVal: 275,
     range: 'Gigantic (500px)',
+    rangeVal: 500,
     speed: 'Charged (0.3s-1.5s)',
+    speedVal: 0.9,
     special: 'Hold to charge. Multi-tier blasts deal extreme AoE damage but use up to 5 Ammo.',
     color: '#a78bfa',
   },
@@ -72,8 +90,11 @@ const WEAPON_STATS_DATA: Record<string, WeaponStats> = {
     name: 'AKIMBO',
     type: 'Locked',
     damage: '???',
+    damageVal: 0,
     range: '???',
+    rangeVal: 0,
     speed: '???',
+    speedVal: 999,
     special: 'Requires blueprint decryption. Locked.',
     color: '#6B6480',
   }
@@ -109,8 +130,11 @@ export default function Armory({ onClose }: { onClose: () => void }) {
           name: 'LOCKED',
           type: 'Locked' as const,
           damage: '0',
+          damageVal: 0,
           range: 'None',
+          rangeVal: 0,
           speed: 'None',
+          speedVal: 999,
           special: 'Disabled by Heavy Hammer. Equip Sabre or Plasma Dagger to unlock.',
           color: '#6B6480',
         };
@@ -127,6 +151,12 @@ export default function Armory({ onClose }: { onClose: () => void }) {
       (isMeleeHovered && hoveredWeapon !== selectedWeapons.melee) ||
       (isRangedHovered && (selectedWeapons.melee === 'heavy_hammer' || hoveredWeapon !== selectedWeapons.ranged))
     );
+
+    // Calculate comparison deltas against equipped
+    const targetEquipped = isMeleeHovered ? meleeEquippedStats : rangedEquippedStats;
+    const damageDiff = hoveredStats ? hoveredStats.damageVal - targetEquipped.damageVal : 0;
+    const rangeDiff = hoveredStats ? hoveredStats.rangeVal - targetEquipped.rangeVal : 0;
+    const speedDiff = hoveredStats ? hoveredStats.speedVal - targetEquipped.speedVal : 0;
 
     return (
         <>
@@ -146,10 +176,10 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                animate={{ opacity: 1, x: 0 }}
                exit={{ opacity: 0, x: 30 }}
                transition={{ type: 'spring', damping: 25, stiffness: 200, delay: 0.05 }}
-               className="hidden lg:flex absolute right-[440px] top-1/2 -translate-y-1/2 z-50 flex-col gap-3 items-center w-[330px] pointer-events-none select-none"
+               className="hidden lg:flex absolute right-[470px] top-1/2 -translate-y-1/2 z-50 flex-col gap-3 items-center w-[330px] pointer-events-none select-none"
             >
                {/* TOP CONTAINER: Equipped loadout (Always shown) */}
-               <div className="w-full bg-slate-950/95 border border-[var(--armory-primary)]/40 p-5 rounded-lg shadow-[-20px_20px_40px_rgba(0,0,0,0.8)] backdrop-blur-md flex flex-col gap-4 relative">
+               <div className="w-full bg-[#1F1830] border border-[#362A52] p-5 rounded-lg shadow-[-20px_20px_40px_rgba(0,0,0,0.8)] backdrop-blur-md flex flex-col gap-4 relative">
                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--armory-primary)]/50"></div>
                   <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--armory-primary)]/50"></div>
                   <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--armory-primary)]/50"></div>
@@ -186,7 +216,9 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                         </div>
                         <div className="flex justify-between items-baseline mt-0.5">
                            <span className="text-white font-black uppercase text-xs tracking-wider">{rangedEquippedStats.name}</span>
-                           <span className="text-[9px] font-mono text-emerald-400">DMG: {rangedEquippedStats.damage}</span>
+                           {selectedWeapons.melee !== 'heavy_hammer' && (
+                              <span className="text-[9px] font-mono text-emerald-400">DMG: {rangedEquippedStats.damage}</span>
+                           )}
                         </div>
                         <p className="text-[9px] font-mono text-slate-400 leading-tight mt-1">{rangedEquippedStats.special}</p>
                      </div>
@@ -195,43 +227,61 @@ export default function Armory({ onClose }: { onClose: () => void }) {
 
                {/* MIDDLE INDICATOR: Chevron down (only shown when comparison is active) */}
                <div className={`transition-all duration-300 flex flex-col items-center justify-center ${showComparison ? 'opacity-100 scale-100 h-10' : 'opacity-0 scale-75 h-0 overflow-hidden'}`}>
-                  <ChevronsDown className="w-8 h-8 text-[var(--armory-primary-hover)]/80 animate-bounce" style={{ filter: 'drop-shadow(0 0 6px var(--armory-primary))' }} />
+                  <ChevronsDown className="w-8 h-8 text-[#22D3EE]/80 animate-bounce" style={{ filter: 'drop-shadow(0 0 6px #22D3EE)' }} />
                </div>
 
-               {/* BOTTOM CONTAINER: Hovered stats comparison */}
-               <div className={`w-full bg-slate-950/95 border border-[var(--armory-primary)]/40 p-5 rounded-lg shadow-[-20px_20px_40px_rgba(0,0,0,0.8)] backdrop-blur-md flex flex-col gap-3 relative transition-all duration-300 ${showComparison ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-95 pointer-events-none h-0 overflow-hidden py-0 border-none'}`}>
+               {/* BOTTOM CONTAINER: Hovered stats comparison with Cyan colors for Hover/Interactive states */}
+               <div className={`w-full bg-[#1F1830] border border-[#22D3EE]/40 p-5 rounded-lg shadow-[-20px_20px_40px_rgba(0,0,0,0.8)] backdrop-blur-md flex flex-col gap-3 relative transition-all duration-300 ${showComparison ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-95 pointer-events-none h-0 overflow-hidden py-0 border-none'}`}>
                   {showComparison && hoveredStats && (
                      <>
-                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--armory-primary)]/50"></div>
-                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--armory-primary)]/50"></div>
-                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--armory-primary)]/50"></div>
-                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--armory-primary)]/50"></div>
+                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#22D3EE]/50"></div>
+                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#22D3EE]/50"></div>
+                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#22D3EE]/50"></div>
+                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#22D3EE]/50"></div>
 
-                        <div className="flex justify-between items-center border-b border-[var(--armory-primary)]/20 pb-2">
-                           <span className="text-amber-400 font-mono text-[10px] font-black tracking-[0.25em] uppercase">COMPARISON TARGET</span>
-                           <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">[HOVERED]</span>
+                        <div className="flex justify-between items-center border-b border-[#22D3EE]/20 pb-2">
+                           <span className="text-[#22D3EE] font-mono text-[10px] font-black tracking-[0.25em] uppercase">COMPARISON TARGET</span>
+                           <span className="text-[9px] font-mono text-[#22D3EE] uppercase tracking-widest">[HOVERED]</span>
                         </div>
 
                         <div className="flex flex-col gap-2">
                            <div className="flex justify-between items-baseline">
                               <span className="text-white font-black uppercase text-base tracking-wide">{hoveredStats.name}</span>
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                              {/* Ranged/Melee Badge Tag - Styled Teal/Emerald for consistency with list headers */}
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#10b981]/10 text-[#34d399] border border-[#10b981]/30">
                                  {hoveredStats.type}
                               </span>
                            </div>
 
                            <div className="grid grid-cols-3 gap-2 mt-1">
+                              {/* Damage Cell */}
                               <div className="bg-slate-900/60 p-2 rounded border border-slate-800/50 flex flex-col items-center">
                                  <span className="text-[8px] font-mono text-slate-500 uppercase tracking-wider">DAMAGE</span>
                                  <span className="text-xs font-mono font-bold text-white mt-0.5">{hoveredStats.damage}</span>
+                                 {/* Delta Indicator */}
+                                 <span className={`text-[9px] font-mono font-bold mt-1 flex items-center gap-0.5 ${damageDiff > 0 ? 'text-emerald-400' : damageDiff < 0 ? 'text-rose-400' : 'text-slate-500'}`}>
+                                    {damageDiff > 0 ? `▲ +${damageDiff}` : damageDiff < 0 ? `▼ ${damageDiff}` : '—'}
+                                 </span>
                               </div>
+
+                              {/* Range Cell */}
                               <div className="bg-slate-900/60 p-2 rounded border border-slate-800/50 flex flex-col items-center">
                                  <span className="text-[8px] font-mono text-slate-500 uppercase tracking-wider">RANGE</span>
                                  <span className="text-xs font-mono font-bold text-white mt-0.5 truncate max-w-full text-center">{hoveredStats.range.split(' ')[0]}</span>
+                                 {/* Delta Indicator */}
+                                 <span className={`text-[9px] font-mono font-bold mt-1 flex items-center gap-0.5 ${rangeDiff > 0 ? 'text-emerald-400' : rangeDiff < 0 ? 'text-rose-400' : 'text-slate-500'}`}>
+                                    {rangeDiff > 0 ? `▲ +${rangeDiff}` : rangeDiff < 0 ? `▼ ${rangeDiff}` : '—'}
+                                 </span>
                               </div>
+
+                              {/* Speed Cell */}
                               <div className="bg-slate-900/60 p-2 rounded border border-slate-800/50 flex flex-col items-center">
                                  <span className="text-[8px] font-mono text-slate-500 uppercase tracking-wider">SPEED</span>
                                  <span className="text-xs font-mono font-bold text-white mt-0.5 truncate max-w-full text-center">{hoveredStats.speed.split(' ')[0]}</span>
+                                 {/* Delta Indicator - lower speedVal is better/faster */}
+                                 <span className={`text-[9px] font-mono font-bold mt-1 flex items-center gap-0.5 ${speedDiff < 0 ? 'text-emerald-400' : speedDiff > 0 ? 'text-rose-400' : 'text-slate-500'}`}>
+                                    {speedDiff < 0 ? `▲ Faster` : speedDiff > 0 ? `▼ Slower` : '—'}
+                                 </span>
                               </div>
                            </div>
 
