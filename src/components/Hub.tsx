@@ -166,7 +166,7 @@ export default function Hub() {
                      : `inset 0 0 15px ${getRgba(HUB_THEME.armoryColor, 0.05)}`
                }}
             ></div>
-            <span className="relative text-[var(--hub-armory)]/70 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[var(--hub-armory)] transition-colors">LOADOUT &gt;&gt;</span>
+            <span className="relative text-[var(--hub-armory)]/70 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[var(--hub-armory)] transition-colors">LOADOUT &lt;&lt;</span>
             <span className="relative text-white font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-emerald-50">ARMORY</span>
             <div className="relative w-12 h-1 bg-[var(--hub-armory)]/50 mt-3 group-hover:w-full group-hover:bg-[var(--hub-armory)] transition-all duration-500"></div>
          </button>
