@@ -4,41 +4,53 @@ let audioCtx: AudioContext | null = null;
 let uiGainNode: GainNode | null = null;
 let gameplayGainNode: GainNode | null = null;
 
+export const initAudio = (): AudioContext | null => {
+    try {
+        if (!audioCtx) {
+            const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioCtxClass) {
+                audioCtx = new AudioCtxClass();
+            }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+        }
+        if (audioCtx && !uiGainNode) {
+            uiGainNode = audioCtx.createGain();
+            uiGainNode.connect(audioCtx.destination);
+        }
+        if (audioCtx && !gameplayGainNode) {
+            gameplayGainNode = audioCtx.createGain();
+            gameplayGainNode.connect(audioCtx.destination);
+        }
+        updateSfxVolumes();
+        return audioCtx;
+    } catch (e) {
+        console.warn('Could not initialize AudioContext:', e);
+        return null;
+    }
+};
+
+export const isAudioUnlocked = (): boolean => {
+    return !!audioCtx && audioCtx.state === 'running';
+};
+
 const getOscillator = () => {
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        return initAudio();
     }
     if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+        audioCtx.resume().catch(() => {});
     }
-    if (!uiGainNode) {
-        uiGainNode = audioCtx.createGain();
-        uiGainNode.connect(audioCtx.destination);
-    }
-    if (!gameplayGainNode) {
-        gameplayGainNode = audioCtx.createGain();
-        gameplayGainNode.connect(audioCtx.destination);
-    }
-    
-    // Dynamically update volumes on the sub-mix channels
-    try {
-        const settings = useStore.getState().settings;
-        uiGainNode.gain.setValueAtTime((settings.uiSfxVolume ?? 100) / 100, audioCtx.currentTime);
-        gameplayGainNode.gain.setValueAtTime((settings.gameplaySfxVolume ?? 100) / 100, audioCtx.currentTime);
-    } catch (e) {
-        uiGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-        gameplayGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-    }
-
     return audioCtx;
 };
 
 export const getDestination = (isUi: boolean = false): AudioNode => {
     const ctx = getOscillator();
     if (isUi) {
-        return uiGainNode || ctx.destination;
+        return uiGainNode || (ctx ? ctx.destination : (null as any));
     } else {
-        return gameplayGainNode || ctx.destination;
+        return gameplayGainNode || (ctx ? ctx.destination : (null as any));
     }
 };
 
@@ -241,8 +253,10 @@ export const playLevelUpSfx = () => {
 };
 
 export const playHoverSfx = () => {
+    if (!isAudioUnlocked()) return;
     try {
         const ctx = getOscillator();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -718,11 +732,43 @@ const getMusicPath = (filename: string) => {
     return `${base.replace(/\/$/, '')}/music/${filename}`;
 };
 
+const createBgmAudio = (filename: string, loop: boolean = true): HTMLAudioElement => {
+    const audio = new Audio();
+    audio.loop = loop;
+    const primaryPath = getMusicPath(filename);
+    audio.src = primaryPath;
+
+    let retried = false;
+    audio.onerror = () => {
+        if (!retried) {
+            retried = true;
+            const fallbackPath = primaryPath.startsWith('/')
+                ? primaryPath.slice(1)
+                : `/${primaryPath}`;
+            audio.src = fallbackPath;
+            audio.play().catch(() => {});
+        }
+    };
+
+    return audio;
+};
+
+const playAudioSafely = (audio: HTMLAudioElement) => {
+    const p = audio.play();
+    if (p !== undefined) {
+        p.catch(err => {
+            if (err.name !== 'AbortError') {
+                console.warn('BGM playback deferred or unavailable:', err?.message || err);
+            }
+        });
+    }
+};
+
+const INGAME_TRACKS = ['ingame_bgm_1.mp3', 'ingame_bgm_3.mp3'];
+let inGamePlaylistFiles: string[] = [];
+
 export const shuffleInGamePlaylist = () => {
-    const tracks = [
-        getMusicPath('ingame_bgm_1.mp3'),
-        getMusicPath('ingame_bgm_3.mp3')
-    ];
+    const tracks = [...INGAME_TRACKS];
     // Fisher-Yates shuffle
     for (let i = tracks.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -730,9 +776,8 @@ export const shuffleInGamePlaylist = () => {
         tracks[i] = tracks[j];
         tracks[j] = temp;
     }
-    playlist = tracks;
+    inGamePlaylistFiles = tracks;
     playlistIndex = 0;
-    console.log('Shuffled in-game BGM playlist:', playlist);
 };
 
 export const updateBgmState = (stage: GameStage, level: number) => {
@@ -741,12 +786,11 @@ export const updateBgmState = (stage: GameStage, level: number) => {
             if (currentBgmType === 'HUB') return;
             stopAllBgm();
             
-            const audio = new Audio(getMusicPath('hub_bgm_1.mp3'));
-            audio.loop = true;
+            const audio = createBgmAudio('hub_bgm_1.mp3', true);
             currentBgm = audio;
             currentBgmType = 'HUB';
             
-            audio.play().catch(err => console.log('BGM playback blocked/failed', err));
+            playAudioSafely(audio);
             fadeIn(audio);
         } else if (stage === GameStage.PLAYING || stage === GameStage.LEVEL_UP) {
             const isBoss = level % 10 === 0;
@@ -754,18 +798,17 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                 if (currentBgmType === 'BOSS') return;
                 stopAllBgm();
                 
-                const audio = new Audio(getMusicPath('boss_bgm_1.mp3'));
-                audio.loop = true;
+                const audio = createBgmAudio('boss_bgm_1.mp3', true);
                 currentBgm = audio;
                 currentBgmType = 'BOSS';
                 
-                audio.play().catch(err => console.log('BGM playback blocked/failed', err));
+                playAudioSafely(audio);
                 fadeIn(audio);
             } else {
                 if (currentBgmType === 'IN_GAME') return;
                 stopAllBgm();
                 
-                if (playlist.length === 0) {
+                if (inGamePlaylistFiles.length === 0) {
                     shuffleInGamePlaylist();
                 }
                 
@@ -786,37 +829,28 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                         } catch (e) {}
                     }
                     
-                    if (playlist.length === 0) return;
-                    const trackPath = playlist[playlistIndex];
-                    const audio = new Audio(trackPath);
-                    audio.loop = false;
+                    if (inGamePlaylistFiles.length === 0) return;
+                    const trackFile = inGamePlaylistFiles[playlistIndex];
+                    const audio = createBgmAudio(trackFile, false);
                     audio.onended = () => {
                         loadFailCount = 0;
-                        playlistIndex = (playlistIndex + 1) % playlist.length;
+                        playlistIndex = (playlistIndex + 1) % inGamePlaylistFiles.length;
                         playPlaylistTrack();
                     };
-                    audio.onerror = () => {
-                        console.warn(`BGM track failed to load: ${trackPath}. Skipping to next track.`);
+                    const origOnError = audio.onerror;
+                    audio.onerror = (e) => {
+                        if (typeof origOnError === 'function') {
+                            (origOnError as any)(e);
+                        }
                         loadFailCount++;
-                        if (loadFailCount < playlist.length) {
-                            playlistIndex = (playlistIndex + 1) % playlist.length;
+                        if (loadFailCount < inGamePlaylistFiles.length) {
+                            playlistIndex = (playlistIndex + 1) % inGamePlaylistFiles.length;
                             playPlaylistTrack();
                         }
                     };
                     
                     currentBgm = audio;
-                    audio.play().then(() => {
-                        loadFailCount = 0;
-                    }).catch(err => {
-                        console.log('BGM playlist playback blocked/failed', err);
-                        if (audio.error) {
-                            loadFailCount++;
-                            if (loadFailCount < playlist.length) {
-                                playlistIndex = (playlistIndex + 1) % playlist.length;
-                                playPlaylistTrack();
-                            }
-                        }
-                    });
+                    playAudioSafely(audio);
                     fadeIn(audio);
                 };
                 

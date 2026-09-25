@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { playHoverSfx, playClickSfx } from '../game/audio';
 import { Volume2, Sparkles, RotateCcw } from 'lucide-react';
 
 interface ReadyPromptProps {
@@ -11,16 +10,10 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
   const [declined, setDeclined] = useState(false);
 
   const handleYes = () => {
-    try {
-      playClickSfx();
-    } catch (e) {}
     onConfirm();
   };
 
   const handleNo = () => {
-    try {
-      playClickSfx();
-    } catch (e) {}
     setDeclined(true);
   };
 
@@ -73,9 +66,6 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
               <div className="flex items-center gap-4 w-full max-w-xs">
                 <button
                   type="button"
-                  onMouseEnter={() => {
-                    try { playHoverSfx(); } catch (e) {}
-                  }}
                   onClick={handleYes}
                   className="flex-1 py-3 px-6 rounded-xl font-bold text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/25 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
@@ -84,9 +74,6 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
 
                 <button
                   type="button"
-                  onMouseEnter={() => {
-                    try { playHoverSfx(); } catch (e) {}
-                  }}
                   onClick={handleNo}
                   className="flex-1 py-3 px-6 rounded-xl font-medium text-base bg-[#1F1830] hover:bg-[#2B2244] border border-[#362A52] text-[#B4A9CC] hover:text-white transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >

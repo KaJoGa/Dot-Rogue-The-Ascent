@@ -11,7 +11,7 @@ import GameOver from './components/GameOver';
 import GameArea from './game/GameArea';
 import ReadyPrompt from './components/ReadyPrompt';
 import { useStore, GameStage } from './store';
-import { updateBgmState } from './game/audio';
+import { updateBgmState, initAudio, playClickSfx } from './game/audio';
 
 export default function App() {
   const stage = useStore((state) => state.stage);
@@ -54,14 +54,10 @@ export default function App() {
   }, [hasStarted, stage, level]);
 
   const handleStartGame = () => {
+    // Initialize Web Audio context during user click gesture
+    initAudio();
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioContextClass) {
-        const tempCtx = new AudioContextClass();
-        if (tempCtx.state === 'suspended') {
-          tempCtx.resume();
-        }
-      }
+      playClickSfx();
     } catch (e) {}
 
     setHasStarted(true);
