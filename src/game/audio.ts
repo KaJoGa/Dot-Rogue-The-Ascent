@@ -745,8 +745,12 @@ const createBgmAudio = (filename: string, loop: boolean = true): HTMLAudioElemen
             const fallbackPath = primaryPath.startsWith('/')
                 ? primaryPath.slice(1)
                 : `/${primaryPath}`;
-            audio.src = fallbackPath;
-            audio.play().catch(() => {});
+            try {
+                if (audio.src !== new URL(fallbackPath, window.location.href).href) {
+                    audio.src = fallbackPath;
+                    audio.play().catch(() => {});
+                }
+            } catch (e) {}
         }
     };
 
