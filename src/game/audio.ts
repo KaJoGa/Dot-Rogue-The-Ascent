@@ -704,6 +704,7 @@ export const stopAllBgm = () => {
             currentBgm.pause();
             currentBgm.currentTime = 0;
             currentBgm.onended = null;
+            currentBgm.onerror = null;
         } catch (e) {
             console.warn('Failed to stop BGM:', e);
         }
@@ -714,9 +715,9 @@ export const stopAllBgm = () => {
 
 export const shuffleInGamePlaylist = () => {
     const tracks = [
-        '/music/[In_Game_BGM_1]Waiting_for_a_Challenger.mp3',
-        '/music/[In_Game_BGM_2]Save_Point_Morning.mp3',
-        '/music/[In_Game_BGM_3]Morning_at_the_Gate.mp3'
+        '/music/ingame_bgm_1.mp3',
+        '/music/ingame_bgm_2.mp3',
+        '/music/ingame_bgm_3.mp3'
     ];
     // Fisher-Yates shuffle
     for (let i = tracks.length - 1; i > 0; i--) {
@@ -736,7 +737,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
             if (currentBgmType === 'HUB') return;
             stopAllBgm();
             
-            const audio = new Audio('/music/[Hub_BGM]Ready_for_the_First_Level.mp3');
+            const audio = new Audio('/music/hub_bgm_1.mp3');
             audio.loop = true;
             currentBgm = audio;
             currentBgmType = 'HUB';
@@ -749,7 +750,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                 if (currentBgmType === 'BOSS') return;
                 stopAllBgm();
                 
-                const audio = new Audio('/music/[Boss_Fight_BGM_1]The_Last_Quarter.mp3');
+                const audio = new Audio('/music/boss_bgm_1.mp3');
                 audio.loop = true;
                 currentBgm = audio;
                 currentBgmType = 'BOSS';
@@ -766,6 +767,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                 
                 currentBgmType = 'IN_GAME';
                 
+                let loadFailCount = 0;
                 const playPlaylistTrack = () => {
                     if (fadeInInterval) {
                         clearInterval(fadeInInterval);
@@ -776,19 +778,41 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                             currentBgm.pause();
                             currentBgm.currentTime = 0;
                             currentBgm.onended = null;
+                            currentBgm.onerror = null;
                         } catch (e) {}
                     }
                     
+                    if (playlist.length === 0) return;
                     const trackPath = playlist[playlistIndex];
                     const audio = new Audio(trackPath);
                     audio.loop = false;
                     audio.onended = () => {
+                        loadFailCount = 0;
                         playlistIndex = (playlistIndex + 1) % playlist.length;
                         playPlaylistTrack();
                     };
+                    audio.onerror = () => {
+                        console.warn(`BGM track failed to load: ${trackPath}. Skipping to next track.`);
+                        loadFailCount++;
+                        if (loadFailCount < playlist.length) {
+                            playlistIndex = (playlistIndex + 1) % playlist.length;
+                            playPlaylistTrack();
+                        }
+                    };
                     
                     currentBgm = audio;
-                    audio.play().catch(err => console.log('BGM playlist playback blocked/failed', err));
+                    audio.play().then(() => {
+                        loadFailCount = 0;
+                    }).catch(err => {
+                        console.log('BGM playlist playback blocked/failed', err);
+                        if (audio.error) {
+                            loadFailCount++;
+                            if (loadFailCount < playlist.length) {
+                                playlistIndex = (playlistIndex + 1) % playlist.length;
+                                playPlaylistTrack();
+                            }
+                        }
+                    });
                     fadeIn(audio);
                 };
                 
