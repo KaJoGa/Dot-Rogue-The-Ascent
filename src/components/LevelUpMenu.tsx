@@ -64,6 +64,22 @@ export default function LevelUpMenu() {
     playLevelUpSfx();
   }, [runStats.pendingLevelUps]);
 
+  useEffect(() => {
+    // Ignore keyboard keydown/keypress actions during level-up selection (mouse only)
+    const blockKeyboardInput = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    window.addEventListener('keydown', blockKeyboardInput, { capture: true });
+    window.addEventListener('keypress', blockKeyboardInput, { capture: true });
+
+    return () => {
+      window.removeEventListener('keydown', blockKeyboardInput, { capture: true });
+      window.removeEventListener('keypress', blockKeyboardInput, { capture: true });
+    };
+  }, []);
+
   return (
     <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-50 backdrop-blur-sm">
        <motion.div 

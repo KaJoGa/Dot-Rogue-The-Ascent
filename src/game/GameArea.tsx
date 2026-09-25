@@ -141,8 +141,25 @@ export default function GameArea() {
     camera.pos.x = Math.max(0, Math.min(state.width - camera.width, camera.pos.x));
     camera.pos.y = Math.max(0, Math.min(state.height - camera.height, camera.pos.y));
 
-    const handleKeyDown = (e: KeyboardEvent) => { state.keys[e.key.toLowerCase()] = true; };
-    const handleKeyUp = (e: KeyboardEvent) => { state.keys[e.key.toLowerCase()] = false; };
+    const clearInputState = () => {
+      Object.keys(state.keys).forEach(k => { state.keys[k] = false; });
+      state.isMouseDown = false;
+      state.mouseRightDown = false;
+      if (state.player) {
+        state.player.vel = { x: 0, y: 0 };
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => { 
+      const currentStage = useStore.getState().stage;
+      const isPaused = useStore.getState().isPaused;
+      if (currentStage === GameStage.PLAYING && !isPaused) {
+        state.keys[e.key.toLowerCase()] = true; 
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => { 
+      state.keys[e.key.toLowerCase()] = false; 
+    };
     const handleMouseMove = (e: MouseEvent) => {
        const rect = canvas.getBoundingClientRect();
        state.mouseScreenPos = {
@@ -151,6 +168,9 @@ export default function GameArea() {
        };
     };
     const handleMouseDown = (e: MouseEvent) => {
+       const currentStage = useStore.getState().stage;
+       const isPaused = useStore.getState().isPaused;
+       if (currentStage !== GameStage.PLAYING || isPaused) return;
        if (e.button === 0) state.isMouseDown = true;
        if (e.button === 2) state.mouseRightDown = true;
     };
@@ -159,6 +179,7 @@ export default function GameArea() {
        if (e.button === 2) state.mouseRightDown = false;
     };
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleBlur = () => clearInputState();
 
     const handleSkipStage = () => {
         state.time = state.level % 10 === 0 ? 120 : 60; // trigger the timeout directly
@@ -170,6 +191,7 @@ export default function GameArea() {
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('skip-stage', handleSkipStage);
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('blur', handleBlur);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mousedown', handleMouseDown);
     canvas.addEventListener('contextmenu', handleContextMenu);
@@ -186,6 +208,7 @@ export default function GameArea() {
       const isPaused = useStore.getState().isPaused;
 
       if (currentStage !== GameStage.PLAYING || isPaused) {
+          clearInputState();
           lastTime = time; // prevent large dt buildup
           animationId = requestAnimationFrame(loop);
           return;
@@ -625,6 +648,7 @@ export default function GameArea() {
        window.removeEventListener('keyup', handleKeyUp);
        window.removeEventListener('skip-stage', handleSkipStage);
        window.removeEventListener('mouseup', handleMouseUp);
+       window.removeEventListener('blur', handleBlur);
        canvas.removeEventListener('mousemove', handleMouseMove);
        canvas.removeEventListener('mousedown', handleMouseDown);
        canvas.removeEventListener('contextmenu', handleContextMenu);

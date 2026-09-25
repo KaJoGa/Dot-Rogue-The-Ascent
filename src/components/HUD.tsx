@@ -42,7 +42,7 @@ const HUD_THEME = {
 };
 
 export default function HUD() {
-  const { runStats, upgrades, runUpgrades, selectedWeapons, isPaused, setIsPaused, setStage, settings, updateSettings, isSandbox } = useStore();
+  const { stage, runStats, upgrades, runUpgrades, selectedWeapons, isPaused, setIsPaused, setStage, settings, updateSettings, isSandbox } = useStore();
   const [showSettings, setShowSettings] = useState(false);
   const [showQuitConfirm, setShowQuitConfirm] = useState(false);
   const [statsExpanded, setStatsExpanded] = useState(false);
@@ -61,6 +61,7 @@ export default function HUD() {
 
   useEffect(() => {
      const handleKeyDown = (e: KeyboardEvent) => {
+        if (stage !== GameStage.PLAYING) return;
         if (e.key === 'Escape') {
            if (showQuitConfirm) setShowQuitConfirm(false);
            else {
@@ -72,7 +73,7 @@ export default function HUD() {
      };
      window.addEventListener('keydown', handleKeyDown);
      return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPaused, showSettings, showQuitConfirm, setIsPaused]);
+  }, [stage, isPaused, showSettings, showQuitConfirm, setIsPaused]);
 
   // Try to find the player from GameState if we could, but react doesn't know. 
   // Wait, React doesn't directly know the Player HP because it changes every frame via Canvas.
