@@ -713,11 +713,15 @@ export const stopAllBgm = () => {
     currentBgmType = null;
 };
 
+const getMusicPath = (filename: string) => {
+    const base = import.meta.env.BASE_URL || '/';
+    return `${base.replace(/\/$/, '')}/music/${filename}`;
+};
+
 export const shuffleInGamePlaylist = () => {
     const tracks = [
-        '/music/ingame_bgm_1.mp3',
-        '/music/ingame_bgm_2.mp3',
-        '/music/ingame_bgm_3.mp3'
+        getMusicPath('ingame_bgm_1.mp3'),
+        getMusicPath('ingame_bgm_3.mp3')
     ];
     // Fisher-Yates shuffle
     for (let i = tracks.length - 1; i > 0; i--) {
@@ -737,7 +741,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
             if (currentBgmType === 'HUB') return;
             stopAllBgm();
             
-            const audio = new Audio('/music/hub_bgm_1.mp3');
+            const audio = new Audio(getMusicPath('hub_bgm_1.mp3'));
             audio.loop = true;
             currentBgm = audio;
             currentBgmType = 'HUB';
@@ -750,7 +754,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                 if (currentBgmType === 'BOSS') return;
                 stopAllBgm();
                 
-                const audio = new Audio('/music/boss_bgm_1.mp3');
+                const audio = new Audio(getMusicPath('boss_bgm_1.mp3'));
                 audio.loop = true;
                 currentBgm = audio;
                 currentBgmType = 'BOSS';
