@@ -100,7 +100,7 @@ export class PlasmaDagger extends Weapon {
 
     drawOverlay(ctx: CanvasRenderingContext2D, camera: Camera, game: GameState, player: Player): void {
         for (const ent of game.entities) {
-            if (ent.type === EntityType.ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.SANDBOX_DUMMY) {
+            if (ent instanceof BaseEntity && (ent.type === EntityType.ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.SANDBOX_DUMMY)) {
                 this.renderWeakpoint(ctx, ent, camera);
             }
         }
@@ -142,7 +142,7 @@ export class PlasmaDagger extends Weapon {
         
         // Passively add weakpoints to enemies
         game.entities.forEach(ent => {
-            if (ent.type === EntityType.ENEMY || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.SANDBOX_DUMMY) {
+            if (ent instanceof BaseEntity && (ent.type === EntityType.ENEMY || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.SANDBOX_DUMMY)) {
                 this.spawnEnemyWeakpoint(ent);
             }
         });
@@ -218,11 +218,11 @@ export class PlasmaDagger extends Weapon {
             );
         
             for (const ent of game.entities) {
-                if (ent === player || ent.isDead) continue;
+                if (ent === player || ent.isDead || !(ent instanceof BaseEntity)) continue;
                 if (ent.type === EntityType.ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.SANDBOX_DUMMY) {
                     if (distanceToBlade(ent.pos) <= ent.radius + bladeHitRadius) {
                             // Hit!
-                            if ((ent as any).invulnTimer > 0) continue;
+                            if ((ent.invulnTimer ?? 0) > 0) continue;
                             
                             // Check for Critical Hit
                             const isCrit = this.checkAttackCollision(player, ent, angle);

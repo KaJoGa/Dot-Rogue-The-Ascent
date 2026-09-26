@@ -21,7 +21,7 @@ export class Bow extends Weapon {
 
     id = 'bow';
     update(dt: number, game: GameState, player: Player) {
-        (window as any).currentRangedWeaponState = null;
+        window.currentRangedWeaponState = null;
         if (this.cooldown > 0) {
             this.cooldown -= dt;
         }

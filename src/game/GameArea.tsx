@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useStore, GameStage } from '../store';
 import { Player, Enemy, Boss, SpecialEnemy, EliteEnemy, Pickup } from './entities';
-import { GameState, Entity, Particle, Vector2, Camera } from './types';
+import { GameState, Entity, EntityType, Particle, Vector2, Camera } from './types';
+import { Weapon } from './weapons/Weapon';
 import { math, uid } from './utils';
 import { generateLevel } from './LevelGenerator';
 import { playGameOverSfx, stopBossRapidFireLoopSfx } from './audio';
@@ -125,7 +126,7 @@ export default function GameArea() {
       }
     };
 
-    (window as any).currentRunTime = 0;
+    window.currentRunTime = 0;
 
     // Load level
     generateLevel(state);
@@ -182,9 +183,11 @@ export default function GameArea() {
     const handleBlur = () => clearInputState();
 
     const handleSkipStage = () => {
+        if (state.skipForceComplete) return;
         state.time = state.level % 10 === 0 ? 120 : 60; // trigger the timeout directly
         state.skipForceComplete = true; // custom flag for force complete
         state.entities = state.entities.filter(e => e.type !== 1 && e.type !== 3 && e.type !== 6 && e.type !== 7);
+        window.dispatchEvent(new CustomEvent('wave-skipped'));
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -218,13 +221,13 @@ export default function GameArea() {
       lastTime = time;
       state.time += dt;
       state.runTime += dt;
-      (window as any).currentRunTime = state.runTime;
+      window.currentRunTime = state.runTime;
       
       const maxStageTime = state.level % 10 === 0 ? 120 : 60;
       const remainingTime = Math.max(0, maxStageTime - state.time);
-      (window as any).currentStageTimeRemaining = remainingTime;
-      (window as any).currentStageTimeMax = maxStageTime;
-      (window as any).canSkipWave = remainingTime <= maxStageTime / 2 && !useStore.getState().settings?.autoSkipWave;
+      window.currentStageTimeRemaining = remainingTime;
+      window.currentStageTimeMax = maxStageTime;
+      window.canSkipWave = remainingTime <= 40 && !useStore.getState().settings?.autoSkipWave;
 
       // Spawning logic (staggered)
       const isBossRush = useStore.getState().isBossRush;
@@ -317,14 +320,14 @@ export default function GameArea() {
       }
 
       // Propagate state to window for react components/entities
-      (window as any).currentPlayerHp = { current: state.player.hp, max: state.player.maxHp };
-      const boss = state.entities.find((e: any) => e.type === 3); // 3 is Boss
+      window.currentPlayerHp = { current: state.player.hp, max: state.player.maxHp };
+      const boss = state.entities.find((e) => e.type === EntityType.BOSS);
       if (boss) {
-          (window as any).currentBossHp = { current: boss.hp, max: boss.maxHp, color: boss.color };
+          window.currentBossHp = { current: boss.hp, max: boss.maxHp, color: boss.color };
       } else {
-          (window as any).currentBossHp = null;
+          window.currentBossHp = null;
       }
-      (window as any).gameSettings = useStore.getState().settings;
+      window.gameSettings = useStore.getState().settings;
 
       state.entities.forEach(e => e.update(dt, state));
       state.entities = state.entities.filter(e => !e.isDead);
@@ -367,16 +370,30 @@ export default function GameArea() {
 
       // Check level clear
       if (!isSandbox) {
-          const activeEnemies = state.entities.filter((e: any) => e.type === 3 || e.type === 1 || e.type === 6 || e.type === 7).length; // Boss(3), Enemy(1), SpecialEnemy(6), EliteEnemy(7)
+          const activeEnemies = state.entities.filter((e) => 
+              e.type === EntityType.BOSS || 
+              e.type === EntityType.ENEMY || 
+              e.type === EntityType.SPECIAL_ENEMY || 
+              e.type === EntityType.ELITE_ENEMY
+          ).length;
           
           const maxStageTime = state.level % 10 === 0 ? 120 : 60;
           const remainingTime = Math.max(0, maxStageTime - state.time);
           const autoSkip = useStore.getState().settings?.autoSkipWave;
-          const canSkip = remainingTime <= maxStageTime / 2;
+          const canSkip = remainingTime <= 40;
           
           let skipTriggered = state.skipForceComplete;
           if (canSkip) {
-             if (state.keys['y'] || autoSkip) skipTriggered = true;
+             if (state.keys['e'] || state.keys['y'] || autoSkip) {
+                state.keys['e'] = false;
+                state.keys['y'] = false;
+                if (!state.skipForceComplete) {
+                   state.skipForceComplete = true;
+                   state.entities = state.entities.filter(e => e.type !== 1 && e.type !== 3 && e.type !== 6 && e.type !== 7);
+                   window.dispatchEvent(new CustomEvent('wave-skipped'));
+                }
+                skipTriggered = true;
+             }
           }
           const timerEnded = remainingTime <= 0;
           const enemiesCleared = state.enemiesToSpawn <= 0 && activeEnemies === 0;
@@ -465,7 +482,7 @@ export default function GameArea() {
       
       // Weapon Overlays
       if (state.player.weapons) {
-          Object.values(state.player.weapons).forEach((w: any) => {
+          Object.values(state.player.weapons).forEach((w: Weapon) => {
               if (w.drawOverlay) w.drawOverlay(ctx, camera, state, state.player);
           });
       }
@@ -495,14 +512,14 @@ export default function GameArea() {
       });
 
       // Crosshair ranged recharge bar
-      const p = state.player as any;
+      const p = state.player;
       if (p && p.rangedCooldown > 0 && p.maxRangedCooldown > 0) {
           const mX = state.mouseScreenPos.x;
           const mY = state.mouseScreenPos.y + 25; // 25px below cursor
           const barW = 30;
           const barH = 5;
           const pct = Math.max(0, Math.min(1, 1 - (p.rangedCooldown / p.maxRangedCooldown)));
-          const rangedState = (window as any).currentRangedWeaponState;
+          const rangedState = window.currentRangedWeaponState;
           const isHandCannon = rangedState?.id === 'hand_cannon';
           const chargeColors = ['#22D3EE', '#34D399', '#7C3AED', '#FBBF24', '#F87171'];
           const chargeLevel = isHandCannon ? Math.max(1, Math.min(5, rangedState.charges || 1)) : 1;
@@ -606,7 +623,7 @@ export default function GameArea() {
        let nextBiome = runStats.biome;
        
        const reward = 10 + Math.floor(runStats.level * 1.5);
-       (state as any).onGainCurrency(reward);
+       state.onGainCurrency(reward);
        
        if (nextLevel > nextBiome * 10) {
            nextBiome++;
@@ -616,6 +633,8 @@ export default function GameArea() {
        state.biome = nextBiome;
        state.time = 0;
        state.skipForceComplete = false;
+       state.keys['e'] = false;
+       state.keys['y'] = false;
        
        if (useStore.getState().isBossRush) {
            useStore.getState().triggerBossReward();
@@ -640,8 +659,8 @@ export default function GameArea() {
        state.entities = [];
        state.particles = [];
        state.floatingTexts = [];
-       (window as any).currentPlayerHp = null;
-       (window as any).currentBossHp = null;
+       window.currentPlayerHp = null;
+       window.currentBossHp = null;
        cancelAnimationFrame(animationId);
        resizeObserver.disconnect();
        window.removeEventListener('keydown', handleKeyDown);

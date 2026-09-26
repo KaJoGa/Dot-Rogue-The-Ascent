@@ -44,7 +44,7 @@ export class Projectile extends BaseEntity {
            if (ent.id === this.id || ent.type === EntityType.PICKUP) continue;
            if (this.isFriendly && (ent.type === EntityType.ENEMY || ent.type === EntityType.BOSS || ent.type === EntityType.SPECIAL_ENEMY || ent.type === EntityType.ELITE_ENEMY || ent.type === EntityType.SANDBOX_DUMMY)) {
              if (checkCollision(checkPos, this.radius + 8, ent.pos, ent.radius)) {
-               if ((ent as any).invulnTimer > 0) {
+               if ((ent.invulnTimer ?? 0) > 0) {
                  this.isDead = true;
                  collided = true;
                  break;

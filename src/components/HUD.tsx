@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore, GameStage } from '../store';
 import { Pause, Lock, Volume1, Volume2 } from 'lucide-react';
 import { playHoverSfx, playClickSfx } from '../game/audio';
+import { RangedWeaponState } from '../game/types';
 
 interface CheckboxProps {
   checked: boolean;
@@ -59,6 +60,42 @@ export default function HUD() {
     return rounded.toString();
   };
 
+  const [playerHp, setPlayerHp] = useState({ current: 0, max: 100 });
+  const [bossHp, setBossHp] = useState<{ current: number, max: number, color?: string } | null>(null);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [canSkipWave, setCanSkipWave] = useState<boolean>(false);
+  const [showWaveSkipped, setShowWaveSkipped] = useState<boolean>(false);
+  const [rangedWeaponState, setRangedWeaponState] = useState<RangedWeaponState | null>(null);
+
+  const triggerSkipWave = () => {
+     playClickSfx();
+     setCanSkipWave(false);
+     window.dispatchEvent(new Event('skip-stage'));
+  };
+
+  useEffect(() => {
+     let timer: ReturnType<typeof setTimeout> | null = null;
+     const handleWaveSkipped = () => {
+        setShowWaveSkipped(true);
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+           setShowWaveSkipped(false);
+        }, 2000);
+     };
+
+     window.addEventListener('wave-skipped', handleWaveSkipped);
+     return () => {
+        window.removeEventListener('wave-skipped', handleWaveSkipped);
+        if (timer) clearTimeout(timer);
+     };
+  }, []);
+
+  useEffect(() => {
+     if (stage !== GameStage.PLAYING) {
+        setShowWaveSkipped(false);
+     }
+  }, [stage]);
+
   useEffect(() => {
      const handleKeyDown = (e: KeyboardEvent) => {
         if (stage !== GameStage.PLAYING) return;
@@ -69,42 +106,34 @@ export default function HUD() {
                setIsPaused(newPausedState);
                setShowSettings(newPausedState);
            }
+        } else if (e.key.toLowerCase() === 'e' && canSkipWave && !isPaused && !showWaveSkipped) {
+           if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+           triggerSkipWave();
         }
      };
      window.addEventListener('keydown', handleKeyDown);
      return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [stage, isPaused, showSettings, showQuitConfirm, setIsPaused]);
-
-  // Try to find the player from GameState if we could, but react doesn't know. 
-  // Wait, React doesn't directly know the Player HP because it changes every frame via Canvas.
-  // One way is to poll it or just use Zustond. But the prompt says "Show player HP bar". 
-  // Wait I should add HP to runStats? Or give an event interval for React.
-  // Actually, since React needs to render HP, and we just removed it from canvas, we can use a custom event.
-  const [playerHp, setPlayerHp] = useState({ current: 0, max: 100 });
-  const [bossHp, setBossHp] = useState<{ current: number, max: number, color?: string } | null>(null);
-  const [remainingTime, setRemainingTime] = useState<number>(0);
-  const [canSkipWave, setCanSkipWave] = useState<boolean>(false);
-  const [rangedWeaponState, setRangedWeaponState] = useState<any>(null);
+  }, [stage, isPaused, showSettings, showQuitConfirm, canSkipWave, showWaveSkipped, setIsPaused]);
 
   useEffect(() => {
      const interval = setInterval(() => {
-         const hpEvt = (window as any).currentPlayerHp;
+         const hpEvt = window.currentPlayerHp;
          if (hpEvt) {
              setPlayerHp(hpEvt);
          }
-         const bossHpEvt = (window as any).currentBossHp;
+         const bossHpEvt = window.currentBossHp;
          if (bossHpEvt) {
              setBossHp(bossHpEvt);
          } else {
              setBossHp(null);
          }
-         const remainingTimeEvt = (window as any).currentStageTimeRemaining;
+         const remainingTimeEvt = window.currentStageTimeRemaining;
          if (typeof remainingTimeEvt === 'number') {
              setRemainingTime(remainingTimeEvt);
          }
-         const canSkipEvt = (window as any).canSkipWave;
+         const canSkipEvt = window.canSkipWave;
          setCanSkipWave(!!canSkipEvt);
-         setRangedWeaponState((window as any).currentRangedWeaponState ?? null);
+         setRangedWeaponState(window.currentRangedWeaponState ?? null);
      }, 100);
      return () => clearInterval(interval);
   }, []);
@@ -164,13 +193,31 @@ export default function HUD() {
             <span className="text-emerald-400 font-mono text-xs uppercase tracking-wider">Time</span>
             <span className="text-xl font-mono font-bold text-white tracking-widest">{formatTime(remainingTime)}</span>
          </div>
-         {canSkipWave && (
-            <button 
-               onClick={() => window.dispatchEvent(new Event('skip-stage'))}
-               className="mt-2 bg-indigo-900/80 hover:bg-indigo-800 border border-indigo-500/50 hover:border-indigo-400 backdrop-blur-md px-4 py-1.5 rounded shadow-[0_0_15px_rgba(99,102,241,0.3)] text-indigo-100 text-xs font-bold uppercase tracking-widest animate-pulse transition-all cursor-pointer pointer-events-auto"
-            >
-               Skip Wave [Y]
-            </button>
+         {/* Wave Skip Container */}
+         {canSkipWave && !showWaveSkipped && (
+            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-indigo-500/40 backdrop-blur-md px-4 py-2 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex flex-col items-center gap-1.5 pointer-events-auto select-none">
+               <span className="text-xs font-bold text-white tracking-wider">Skip Wave?</span>
+               <button 
+                  type="button"
+                  onClick={triggerSkipWave}
+                  onMouseEnter={() => playHoverSfx()}
+                  className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 border border-indigo-400/50 hover:border-indigo-300 px-4 py-1 rounded-lg text-white text-xs font-bold uppercase tracking-widest shadow-[0_0_12px_rgba(99,102,241,0.3)] transition-all cursor-pointer pointer-events-auto"
+               >
+                  Yes [e]
+               </button>
+               <span className="text-[10px] text-white/50 tracking-normal">
+                  Auto skip can be toggled in settings
+               </span>
+            </div>
+         )}
+
+         {/* Wave Skipped Notification in same position */}
+         {showWaveSkipped && (
+            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-emerald-500/50 backdrop-blur-md px-5 py-2.5 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.3)] flex items-center justify-center pointer-events-none select-none">
+               <span className="text-xs font-black text-emerald-400 uppercase tracking-widest animate-pulse">
+                  Wave Skipped!
+               </span>
+            </div>
          )}
       </div>
       {bossHp && (

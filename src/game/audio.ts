@@ -7,7 +7,7 @@ let gameplayGainNode: GainNode | null = null;
 export const initAudio = (): AudioContext | null => {
     try {
         if (!audioCtx) {
-            const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+            const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
             if (AudioCtxClass) {
                 audioCtx = new AudioCtxClass();
             }
@@ -47,11 +47,9 @@ const getOscillator = () => {
 
 export const getDestination = (isUi: boolean = false): AudioNode => {
     const ctx = getOscillator();
-    if (isUi) {
-        return uiGainNode || (ctx ? ctx.destination : (null as any));
-    } else {
-        return gameplayGainNode || (ctx ? ctx.destination : (null as any));
-    }
+    if (isUi && uiGainNode) return uiGainNode;
+    if (!isUi && gameplayGainNode) return gameplayGainNode;
+    return ctx!.destination;
 };
 
 export const updateSfxVolumes = () => {
@@ -660,7 +658,7 @@ let currentBgm: HTMLAudioElement | null = null;
 let currentBgmType: 'HUB' | 'IN_GAME' | 'BOSS' | null = null;
 let playlist: string[] = [];
 let playlistIndex: number = 0;
-let fadeInInterval: any = null;
+let fadeInInterval: ReturnType<typeof setInterval> | null = null;
 const TARGET_VOLUME = 0.4; // 40% volume for background music
 
 export const getBgmTargetVolume = (): number => {
@@ -844,7 +842,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                     const origOnError = audio.onerror;
                     audio.onerror = (e) => {
                         if (typeof origOnError === 'function') {
-                            (origOnError as any)(e);
+                            origOnError.call(audio, e);
                         }
                         loadFailCount++;
                         if (loadFailCount < inGamePlaylistFiles.length) {

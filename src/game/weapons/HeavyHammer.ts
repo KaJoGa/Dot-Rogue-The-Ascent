@@ -89,7 +89,7 @@ class HammerSmash extends BaseEntity {
                 ent.type === EntityType.ELITE_ENEMY ||
                 ent.type === EntityType.SANDBOX_DUMMY
             ) {
-                if ((ent as any).invulnTimer > 0) continue;
+                if ((ent.invulnTimer ?? 0) > 0) continue;
                 if (math.dist(this.pos, ent.pos) <= radius + ent.radius) {
                     this.hitIds.add(ent.id);
                     ent.takeDamage(this.smashDamage, game);

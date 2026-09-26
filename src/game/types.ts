@@ -1,3 +1,5 @@
+import type { Player } from './entities/player/Player';
+
 export type Vector2 = { x: number; y: number };
 
 export enum EntityType {
@@ -24,6 +26,7 @@ export interface Entity {
   speed: number;
   damage: number;
   isDead: boolean;
+  invulnTimer?: number;
   update(dt: number, game: GameState): void;
   draw(ctx: CanvasRenderingContext2D, camera: Camera): void;
   applyKnockback(dir: Vector2, force: number): void;
@@ -38,8 +41,8 @@ export interface Camera {
 }
 
 export interface GameState {
-  player: any;
-  entities: any[];
+  player: Player;
+  entities: Entity[];
   particles: Particle[];
   width: number;
   height: number;
@@ -62,6 +65,8 @@ export interface GameState {
   addFloatingText: (text: string, pos: Vector2, color: string, groupType?: string, value?: number) => void;
   onGainAmmo: (amount: number) => void;
   onUseAmmo: () => boolean;
+  onGainXp: (amount: number, isDirect?: boolean) => void;
+  onGainCurrency: (amount: number) => void;
 }
 
 export interface FloatingText {
@@ -105,3 +110,35 @@ export type RunStats = {
   ammo: number;
   bossKills: number;
 };
+
+export interface RangedWeaponState {
+  id: string;
+  charges?: number;
+  maxCharges?: number;
+  chargeTimer?: number;
+  chargeCooldown?: number;
+}
+
+export interface GameSettingsState {
+  showDmgNotif?: boolean;
+  showDropNotif?: boolean;
+  showExpNotif?: boolean;
+  autoSkipWave?: boolean;
+  bgmVolume?: number;
+  uiSfxVolume?: number;
+  gameplaySfxVolume?: number;
+}
+
+declare global {
+  interface Window {
+    currentPlayerHp?: { current: number; max: number } | null;
+    currentBossHp?: { current: number; max: number; color?: string } | null;
+    currentStageTimeRemaining?: number;
+    currentStageTimeMax?: number;
+    currentRunTime?: number;
+    canSkipWave?: boolean;
+    currentRangedWeaponState?: RangedWeaponState | null;
+    gameSettings?: GameSettingsState;
+    webkitAudioContext?: typeof AudioContext;
+  }
+}

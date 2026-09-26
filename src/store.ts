@@ -18,7 +18,7 @@ export enum GameStage {
   VICTORY
 }
 
-interface AppState {
+export interface AppState {
   // Current active loadout configuration
   selectedWeapons: {
     melee: string;

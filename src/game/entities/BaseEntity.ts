@@ -20,6 +20,7 @@ export class BaseEntity implements Entity {
   atkSpeedMod: number = 1.0;
   attackRange: number = 70;
   isDead: boolean = false;
+  invulnTimer: number = 0;
   weakpoint?: number; // 0 = Top, 1 = Bottom, 2 = Left, 3 = Right
 
   constructor(pos: Vector2) {
@@ -79,7 +80,7 @@ export class BaseEntity implements Entity {
     game.spawnParticles(this.pos, 5, '#F87171');
     
     // DMG notification
-    const settings = (window as any).gameSettings ?? { showDmgNotif: true };
+    const settings = window.gameSettings ?? { showDmgNotif: true };
     if (settings.showDmgNotif) {
        game.addFloatingText(Math.round(amt).toString(), this.pos, '#fecaca'); // red-200
     }

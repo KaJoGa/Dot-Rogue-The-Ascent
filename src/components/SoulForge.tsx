@@ -3,8 +3,21 @@ import { motion } from 'motion/react';
 import { playHoverSfx, playClickSfx } from '../game/audio';
 import { useStore } from '../store';
 import { Lock } from 'lucide-react';
+import { PermanentUpgrades } from '../game/types';
 
-const statConfig = [
+type UpgradeStatKey = keyof Omit<PermanentUpgrades, 'currency'>;
+
+interface StatConfigItem {
+  id: UpgradeStatKey;
+  label: string;
+  baseCost: number;
+  mult: number;
+  maxLevel: number;
+  icon: string;
+  effect: string;
+}
+
+const statConfig: StatConfigItem[] = [
   { id: 'health', label: 'HP', baseCost: 3, mult: 1.8, maxLevel: 10, icon: '❤️', effect: '+50 Max HP' },
   { id: 'damage', label: 'Damage', baseCost: 3, mult: 1.8, maxLevel: 10, icon: '⚔️', effect: '+5 Damage' },
   { id: 'range', label: 'Range', baseCost: 30, mult: 1.8, maxLevel: 5, icon: '🎯', effect: '+4 Attack Range' },
@@ -127,7 +140,7 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                                       onMouseEnter={() => playHoverSfx()}
                                       onClick={() => {
                                         playClickSfx();
-                                        upgradeStat(stat.id as any, cost);
+                                        upgradeStat(stat.id, cost);
                                       }}
                                       disabled={!canAfford}
                                       className={`px-3 py-2 text-[10px] font-mono tracking-[0.15em] transition-all cursor-pointer border flex flex-col items-center justify-center gap-1 min-w-[90px] rounded

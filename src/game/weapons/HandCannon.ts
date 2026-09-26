@@ -124,7 +124,7 @@ class HandCannonShell extends BaseEntity {
                 ent.type === EntityType.ELITE_ENEMY ||
                 ent.type === EntityType.SANDBOX_DUMMY
             ) {
-                if ((ent as any).invulnTimer > 0) continue;
+                if ((ent.invulnTimer ?? 0) > 0) continue;
                 if (math.dist(this.pos, ent.pos) <= this.blastRadius + ent.radius) {
                     ent.takeDamage(this.blastDamage, game);
                     const pushDir = math.normalize(math.sub(ent.pos, this.pos));
@@ -189,7 +189,7 @@ export class HandCannon extends Weapon {
             game.mouseRightDown = false;
         }
 
-        (window as any).currentRangedWeaponState = {
+        window.currentRangedWeaponState = {
             id: this.id,
             charges: this.charges,
             maxCharges: this.maxCharges,

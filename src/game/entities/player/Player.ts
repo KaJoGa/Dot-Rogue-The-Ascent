@@ -1,6 +1,6 @@
 import { EntityType, GameState, Vector2, Camera } from '../../types';
 import { math } from '../../utils';
-import { useStore } from '../../../store';
+import { useStore, AppState } from '../../../store';
 import { BaseEntity } from '../BaseEntity';
 import { Sabre } from '../../weapons/Sabre';
 import { Bow } from '../../weapons/Bow';
@@ -29,14 +29,14 @@ export class Player extends BaseEntity {
   get meleeCooldown() { return this.weapons.melee.cooldown; }
   get maxMeleeCooldown() { return this.weapons.melee.maxCooldown; }
 
-  stats: any; // injected from store
+  stats: AppState; // injected from store
 
   /**
    * Initializes player stats and starting weapons using global store upgrades.
    * Dynamically constructs equipped weapon classes (Sabre, PlasmaDagger, HeavyHammer, Bow, HandCannon)
    * based on the active selection in the user's permanent loadout.
    */
-  constructor(pos: Vector2, stats: any) {
+  constructor(pos: Vector2, stats: AppState) {
     super(pos);
     this.stats = stats;
     let meleeWeapon: Weapon = new Sabre();
@@ -183,7 +183,7 @@ export class Player extends BaseEntity {
     if (!this.weapons.melee.disablesRanged) {
       this.weapons.ranged.update(dt, game, this);
     } else {
-      (window as any).currentRangedWeaponState = { id: 'locked' };
+      window.currentRangedWeaponState = { id: 'locked' };
     }
 
     super.update(dt, game);

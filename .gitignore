@@ -7,3 +7,4 @@ coverage/
 .env*
 !.env.example
 PROJECT_DOCS.md
+DESIGN.md

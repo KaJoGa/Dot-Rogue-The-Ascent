@@ -82,7 +82,7 @@ export class Sabre extends Weapon {
                     while (diff < -Math.PI) diff += Math.PI * 2;
 
                     if (Math.abs(diff) <= maxAngleDiff) {
-                        if ((ent as any).invulnTimer > 0) continue;
+                        if ((ent.invulnTimer ?? 0) > 0) continue;
                         ent.takeDamage(player.damage + bonusDamage, game);
                         const pushDir = math.normalize(math.sub(ent.pos, player.pos));
                         ent.applyKnockback(pushDir, 160);

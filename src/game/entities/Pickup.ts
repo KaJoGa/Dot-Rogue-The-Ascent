@@ -30,15 +30,15 @@ export class Pickup extends BaseEntity {
          this.isDead = true;
          // Handle pickup effect via game callbacks conceptually
          // We will just do it directly for now:
-         const settings = (window as any).gameSettings ?? { showDropNotif: true, showExpNotif: true };
+         const settings = window.gameSettings ?? { showDropNotif: true, showExpNotif: true };
 
          if (this.pType === 0) {
-             (game as any).onGainXp(this.value * 10, false);
+             game.onGainXp(this.value * 10, false);
              if (settings.showExpNotif) game.addFloatingText('', this.pos, '#60a5fa', 'XP', this.value * 10);
          }
          if (this.pType === 1) {
              playGoldPickupSfx();
-             (game as any).onGainCurrency(this.value);
+             game.onGainCurrency(this.value);
              if (settings.showDropNotif) game.addFloatingText('', this.pos, '#FBBF24', 'Gold', this.value);
          }
          if (this.pType === 2) {
