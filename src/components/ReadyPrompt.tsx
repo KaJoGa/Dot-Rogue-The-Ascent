@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Volume2, Sparkles, RotateCcw } from 'lucide-react';
+import { Volume2, Sparkles } from 'lucide-react';
 
 interface ReadyPromptProps {
   onConfirm: () => void;
@@ -15,10 +15,6 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
 
   const handleNo = () => {
     setDeclined(true);
-  };
-
-  const handleReload = () => {
-    window.location.reload();
   };
 
   return (
@@ -94,26 +90,17 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
                 Okay, See you next time perhaps.
               </h2>
 
-              <p className="text-sm text-[#C7CAD1] opacity-75 mb-8">
-                Refresh the web if you changed your mind.
+              <p className="text-sm text-[#C7CAD1] opacity-75 mb-6">
+                Click this text below if you changed your mind.
               </p>
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleReload}
-                  className="inline-flex items-center gap-2 py-2 px-4 rounded-lg text-xs font-semibold bg-[#373D4A] hover:bg-[#5C657A] border border-[#7F899F] text-[#C7CAD1] hover:text-[#F7F5F0] transition-colors cursor-pointer"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  Refresh Web
-                </button>
-
+              <div>
                 <button
                   type="button"
                   onClick={() => setDeclined(false)}
-                  className="inline-flex items-center gap-1.5 py-2 px-4 rounded-lg text-xs font-semibold text-[#5FDDD0] hover:text-[#84E7DC] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 py-2 px-4 rounded-lg text-sm font-semibold text-[#5FDDD0] hover:text-[#84E7DC] hover:underline cursor-pointer transition-colors"
                 >
-                  Wait, I want to play!
+                  Wait, actually i want to play.
                 </button>
               </div>
             </motion.div>
