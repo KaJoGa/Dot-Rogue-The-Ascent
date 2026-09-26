@@ -225,12 +225,33 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'roguelike-game-storage',
+      version: 1,
       // Ensure only meta-progression, custom user settings, and selected equipment persist across sessions
       partialize: (state) => ({
         upgrades: state.upgrades,
         settings: state.settings,
         selectedWeapons: state.selectedWeapons,
       }),
+      merge: (persistedState: any, currentState) => {
+        if (!persistedState || typeof persistedState !== 'object') {
+          return currentState;
+        }
+        return {
+          ...currentState,
+          upgrades: {
+            ...currentState.upgrades,
+            ...(persistedState.upgrades || {}),
+          },
+          settings: {
+            ...currentState.settings,
+            ...(persistedState.settings || {}),
+          },
+          selectedWeapons: {
+            ...currentState.selectedWeapons,
+            ...(persistedState.selectedWeapons || {}),
+          },
+        };
+      },
     }
   )
 );
