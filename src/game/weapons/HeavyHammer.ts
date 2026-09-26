@@ -5,6 +5,7 @@ import { math } from '../utils';
 import { BaseEntity } from '../entities/BaseEntity';
 import { Projectile } from '../entities/Projectile';
 import { playHammerSmashSfx } from '../audio';
+import { theme } from '../theme';
 
 class HammerDebris extends Projectile {
     spin = Math.random() * Math.PI * 2;
@@ -12,7 +13,7 @@ class HammerDebris extends Projectile {
     constructor(pos: Vector2, dir: Vector2, damage: number) {
         super(pos, dir, true, damage, 420);
         this.radius = 6;
-        this.color = '#a16207';
+        this.color = theme.accent.primary;
         this.lifetime = 0.9;
     }
 
@@ -118,13 +119,13 @@ class HammerSmash extends BaseEntity {
             const localAge = Math.min(1, (this.age - stage.time) / 0.25);
             const radius = this.baseRadius * stage.factor * (0.85 + localAge * 0.15);
             const alpha = Math.max(0, 1 - localAge);
-            ctx.strokeStyle = `rgba(245, 158, 11, ${0.75 * alpha})`;
+            ctx.strokeStyle = `rgba(243, 147, 63, ${0.75 * alpha})`; // Copper shockwave ring
             ctx.lineWidth = 4 - localAge * 2;
             ctx.beginPath();
             ctx.arc(0, 0, radius, 0, Math.PI * 2);
             ctx.stroke();
 
-            ctx.strokeStyle = `rgba(120, 53, 15, ${0.7 * alpha})`;
+            ctx.strokeStyle = `rgba(68, 75, 90, ${0.7 * alpha})`;
             ctx.lineWidth = 2;
             for (let i = 0; i < 10; i++) {
                 const angle = (Math.PI * 2 * i) / 10 + stage.factor;
@@ -149,7 +150,7 @@ class HammerSmash extends BaseEntity {
         const gripY = -aimY * this.gripDistance;
 
         ctx.save();
-        ctx.strokeStyle = '#1e293b';
+        ctx.strokeStyle = theme.bg.surfaceDark;
         ctx.lineWidth = 8;
         ctx.lineCap = 'round';
         ctx.beginPath();
@@ -159,13 +160,13 @@ class HammerSmash extends BaseEntity {
 
         ctx.translate(headX, headY);
         ctx.rotate(this.angle);
-        ctx.shadowColor = '#FBBF24';
+        ctx.shadowColor = theme.accent.primary; // Copper glow per DESIGN.md §8
         ctx.shadowBlur = this.passiveActive ? 14 : 0;
 
         const headGradient = ctx.createLinearGradient(-22, -22, 22, 22);
-        headGradient.addColorStop(0, '#334155');
-        headGradient.addColorStop(0.45, '#64748b');
-        headGradient.addColorStop(1, '#1e293b');
+        headGradient.addColorStop(0, theme.bg.surface);
+        headGradient.addColorStop(0.45, theme.bg.surfaceLight);
+        headGradient.addColorStop(1, theme.bg.surfaceDark);
         ctx.fillStyle = headGradient;
         ctx.fillRect(-22, -22, 44, 44);
 
@@ -200,7 +201,7 @@ class HammerSmash extends BaseEntity {
             ctx.stroke();
         }
 
-        ctx.fillStyle = `rgba(251, 191, 36, ${0.25 * impactAlpha})`;
+        ctx.fillStyle = `rgba(243, 147, 63, ${0.25 * impactAlpha})`;
         ctx.beginPath();
         ctx.arc(headX, headY, 8, 0, Math.PI * 2);
         ctx.fill();
@@ -220,7 +221,7 @@ export class HeavyHammer extends Weapon {
         speed: 'Slow (1.2s)',
         speedVal: 1.2,
         special: 'Creates debris shockwave for AoE. Disables Ranged weapon equip.',
-        color: '#f59e0b',
+        color: theme.accent.primary,
     };
 
     id = 'heavy_hammer';

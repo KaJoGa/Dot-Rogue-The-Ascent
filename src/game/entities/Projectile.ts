@@ -1,6 +1,7 @@
 import { EntityType, GameState, Vector2, Camera } from '../types';
 import { math, checkCollision } from '../utils';
 import { BaseEntity } from './BaseEntity';
+import { theme } from '../theme';
 
 export class Projectile extends BaseEntity {
   type = EntityType.PROJECTILE;
@@ -13,7 +14,7 @@ export class Projectile extends BaseEntity {
     this.vel = math.mul(dir, speed);
     this.damage = damage;
     this.radius = 4;
-    this.color = isFriendly ? '#60a5fa' : '#f87171';
+    this.color = isFriendly ? theme.accent.secondary : theme.accent.danger;
   }
 
   update(dt: number, game: GameState) {

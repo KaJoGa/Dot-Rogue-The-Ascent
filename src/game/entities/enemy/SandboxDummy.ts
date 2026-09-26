@@ -1,6 +1,7 @@
 import { GameState, Vector2, EntityType } from '../../types';
 import { math } from '../../utils';
 import { BaseEntity } from '../BaseEntity';
+import { theme } from '../../theme';
 
 export class SandboxDummy extends BaseEntity {
   override type = EntityType.SANDBOX_DUMMY;
@@ -40,25 +41,25 @@ export class SandboxDummy extends BaseEntity {
     // Draw crosshair/target marking
     ctx.beginPath();
     ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#1e293b'; // slate-800
+    ctx.fillStyle = theme.bg.surface;
     ctx.fill();
     ctx.lineWidth = 3;
-    ctx.strokeStyle = '#F87171'; // red-500
+    ctx.strokeStyle = theme.accent.danger;
     ctx.stroke();
 
     ctx.beginPath();
     ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
-    ctx.fillStyle = '#F87171';
+    ctx.fillStyle = theme.accent.danger;
     ctx.fill();
     
     ctx.beginPath();
     ctx.arc(0, 0, this.radius * 0.2, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = theme.text.primary;
     ctx.fill();
     
     // Render total damage taken above it
     if (this.damageTaken > 0) {
-       ctx.fillStyle = '#f87171'; // red-400
+       ctx.fillStyle = theme.accent.danger;
        ctx.font = 'bold 16px monospace';
        ctx.textAlign = 'center';
        ctx.fillText("Total DMG: " + Math.round(this.damageTaken), 0, -this.radius - 10);

@@ -2,11 +2,13 @@ import { EntityType, GameState, Vector2 } from '../../types';
 import { math, checkCollision } from '../../utils';
 import { BaseEntity } from '../BaseEntity';
 import { Pickup } from '../Pickup';
+import { theme } from '../../theme';
 
 export class Enemy extends BaseEntity {
   type = EntityType.ENEMY;
-  color = '#E24B4A';
-  outlineColor = '#7A1F1F';
+  override color: string = theme.enemies.normal;
+  override outlineColor: string | null = '#FFA49E'; // thin bright outline reinforcement for normal grunt per DESIGN.md §7
+  outlineWidth = 2;
   targetTimer = 0;
   baseSpeed: number;
 

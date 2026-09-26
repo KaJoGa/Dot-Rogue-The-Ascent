@@ -1,52 +1,93 @@
 @import "tailwindcss";
 
 @theme {
-  --color-indigo-400: #7C3AED;
-  --color-indigo-500: #7C3AED;
-  --color-indigo-600: #7C3AED;
-  --color-purple-500: #7C3AED;
-  --color-purple-600: #7C3AED;
+  /* Slate & Neutral Surfaces (Forge Steel) */
+  --color-slate-950: #2B303C;
+  --color-slate-900: #373D4A;
+  --color-slate-800: #444B5A; /* Base Background */
+  --color-slate-700: #5C657A; /* Surface / Panels */
+  --color-slate-600: #7F899F; /* Panel Borders */
+  --color-slate-500: #A2ACBE;
+  --color-slate-400: #C7CAD1; /* Text Secondary */
+  --color-slate-300: #DCDFE5;
+  --color-slate-200: #F7F5F0; /* Text Primary */
+  --color-slate-100: #F7F5F0;
+  --color-white: #F7F5F0;
   
-  --color-cyan-300: #22D3EE;
-  --color-cyan-400: #22D3EE;
-  --color-cyan-500: #22D3EE;
-  --color-blue-400: #22D3EE;
-  --color-blue-500: #22D3EE;
-  --color-blue-600: #22D3EE;
+  /* Primary Accent: Copper (#F3933F) - CTAs, Unlocked State */
+  --color-copper-400: #F5A358;
+  --color-copper-500: #F3933F;
+  --color-copper-600: #D87B28;
+  --color-orange-400: #F3933F;
+  --color-orange-500: #F3933F;
+  --color-orange-600: #D87B28;
+  --color-indigo-400: #F3933F;
+  --color-indigo-500: #F3933F;
+  --color-indigo-600: #D87B28;
+  --color-purple-500: #F3933F;
+  --color-purple-600: #D87B28;
 
-  --color-slate-200: #F5F3FF;
-  --color-slate-300: #F5F3FF;
-  --color-white: #F5F3FF;
-  --color-amber-50: #F5F3FF;
-  --color-emerald-50: #F5F3FF;
-  --color-cyan-50: #F5F3FF;
-  
-  --color-slate-400: #B4A9CC;
-  --color-slate-500: #B4A9CC;
-  --color-slate-600: #B4A9CC;
-  --color-indigo-300: #B4A9CC;
+  /* Secondary Accent: Teal (#5FDDD0) - Hover, Comparison, Energy */
+  --color-teal-300: #84E7DC;
+  --color-teal-400: #5FDDD0;
+  --color-teal-500: #5FDDD0;
+  --color-teal-600: #3AB8AB;
+  --color-cyan-300: #84E7DC;
+  --color-cyan-400: #5FDDD0;
+  --color-cyan-500: #5FDDD0;
+  --color-cyan-600: #3AB8AB;
+  --color-blue-400: #64A6F7;
+  --color-blue-500: #64A6F7;
 
-  --color-yellow-400: #FBBF24;
-  --color-yellow-500: #FBBF24;
-  --color-amber-400: #FBBF24;
-  --color-amber-500: #FBBF24;
-  --color-amber-600: #FBBF24;
-  --color-orange-400: #FBBF24;
-  --color-orange-500: #FBBF24;
-  
-  --color-emerald-400: #34D399;
-  --color-emerald-500: #34D399;
-  --color-green-400: #34D399;
-  --color-green-500: #34D399;
+  /* Gold Accent: (#FBCC56) - Currency only */
+  --color-yellow-400: #FBCC56;
+  --color-yellow-500: #FBCC56;
+  --color-amber-400: #FBCC56;
+  --color-amber-500: #FBCC56;
+  --color-amber-600: #E6B53B;
 
-  --color-red-400: #F87171;
-  --color-red-500: #F87171;
-  --color-red-600: #F87171;
-  --color-red-900: #F87171;
+  /* Danger Accent: (#F47B81) - Player HP, Damage */
+  --color-red-400: #F47B81;
+  --color-red-500: #F47B81;
+  --color-red-600: #DF5D64;
+  --color-rose-400: #F47B81;
+  --color-rose-500: #F47B81;
 
-  --color-slate-700: #1F1830;
-  --color-slate-800: #1F1830;
-  --color-slate-900: #1F1830;
+  /* Success Accent: (#51CD8F) - Heal, positive deltas */
+  --color-emerald-400: #51CD8F;
+  --color-emerald-500: #51CD8F;
+  --color-emerald-600: #38B074;
+  --color-green-400: #51CD8F;
+  --color-green-500: #51CD8F;
+}
+
+:root {
+  --theme-bg: #444B5A;
+  --theme-surface: #5C657A;
+  --theme-border: #7F899F;
+  --theme-text-primary: #F7F5F0;
+  --theme-text-secondary: #C7CAD1;
+  --theme-text-locked: rgba(199, 202, 209, 0.55);
+  --theme-accent-primary: #F3933F;
+  --theme-accent-secondary: #5FDDD0;
+  --theme-accent-gold: #FBCC56;
+  --theme-accent-danger: #F47B81;
+  --theme-accent-success: #51CD8F;
+
+  /* HUD mapping */
+  --hud-bg-dark: #373D4A;
+  --hud-bg-accent: #5C657A;
+  --hud-border-color: #7F899F;
+  --hud-muted: #C7CAD1;
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text-primary);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  user-select: none;
 }
 
 @layer utilities {
@@ -72,10 +113,9 @@
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4a4066;
+  background: #5C657A;
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6b6480;
+  background: #7F899F;
 }
-

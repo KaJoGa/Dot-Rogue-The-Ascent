@@ -5,6 +5,7 @@ import { playHoverSfx, playClickSfx, shuffleInGamePlaylist } from '../game/audio
 import { Settings as SettingsIcon, Volume1, Volume2 } from 'lucide-react';
 import Armory from './Armory';
 import SoulForge, { FORGE_THEME } from './SoulForge';
+import { theme } from '../game/theme';
 
 // Helper to convert hex to rgba
 function getRgba(hex: string, alpha: number): string {
@@ -23,21 +24,21 @@ function getRgba(hex: string, alpha: number): string {
 }
 
 const HUB_THEME = {
-  bgDark: '#120E1B',          // Main dark background
-  cardBg: '#1F1830',          // Cards and popups background
-  forgeColor: FORGE_THEME.primary,      // Soul Forge custom color
-  armoryColor: '#10b981',     // Armory custom color
-  borderColor: '#362A52',     // Default border color
+  bgDark: theme.bg.background,          // Base background #444B5A
+  cardBg: theme.bg.surface,             // Panel fill #5C657A
+  forgeColor: theme.accent.primary,     // Soul Forge Copper #F3933F
+  armoryColor: theme.accent.secondary,  // Armory Teal #5FDDD0
+  borderColor: theme.bg.border,         // Border #7F899F
 };
 
 interface CheckboxProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  accent?: 'indigo' | 'emerald';
+  accent?: 'copper' | 'emerald';
 }
 
-function CustomCheckbox({ checked, onChange, accent = 'indigo' }: CheckboxProps) {
-  const activeColor = accent === 'emerald' ? 'bg-emerald-500 border-emerald-500' : 'bg-indigo-500 border-indigo-500';
+function CustomCheckbox({ checked, onChange, accent = 'copper' }: CheckboxProps) {
+  const activeColor = accent === 'emerald' ? 'bg-[#51CD8F] border-[#51CD8F]' : 'bg-[#F3933F] border-[#F3933F]';
   return (
     <button
       type="button"
@@ -48,8 +49,8 @@ function CustomCheckbox({ checked, onChange, accent = 'indigo' }: CheckboxProps)
       }}
       className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none select-none
         ${checked 
-          ? `${activeColor} text-[var(--hub-bg-dark)]` 
-          : 'bg-[var(--hub-card-bg)] border-[#4A4066] hover:border-[#7C3AED]'
+          ? `${activeColor} text-[#373D4A]` 
+          : 'bg-[#444B5A] border-[#7F899F] hover:border-[#5FDDD0]'
         }`}
     >
       {checked && (
@@ -80,18 +81,18 @@ export default function Hub() {
   const inlineStyles = {
     '--hub-bg-dark': HUB_THEME.bgDark,
     '--hub-card-bg': HUB_THEME.cardBg,
-    '--hub-forge': FORGE_THEME.primary,
+    '--hub-forge': HUB_THEME.forgeColor,
     '--hub-armory': HUB_THEME.armoryColor,
     '--hub-border': HUB_THEME.borderColor,
   } as React.CSSProperties;
 
   return (
-    <div style={inlineStyles} className="flex w-full h-full bg-[var(--hub-bg-dark)] text-slate-200 flex-col items-center justify-center relative font-sans overflow-hidden">
+    <div style={inlineStyles} className="flex w-full h-full bg-[#444B5A] text-[#F7F5F0] flex-col items-center justify-center relative font-sans overflow-hidden">
       {/* Background high-tech grid */}
       <div 
         className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] z-0 pointer-events-none animate-diagonal-scroll" 
         style={{ 
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)', 
+          backgroundImage: 'linear-gradient(rgba(247, 245, 240, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(247, 245, 240, 0.05) 1px, transparent 1px)', 
           backgroundSize: '40px 40px',
           transform: 'rotate(-15deg)'
         }} 
@@ -102,17 +103,17 @@ export default function Hub() {
          <button 
            onMouseEnter={() => playHoverSfx()}
            onClick={() => { playClickSfx(); setIsSettingsOpen(true); }}
-           className="p-3 bg-[var(--hub-bg-dark)]/80 backdrop-blur-md border border-slate-800 hover:border-slate-500 hover:bg-slate-900 shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-all cursor-pointer group rounded"
+           className="p-3 bg-[#373D4A]/80 backdrop-blur-md border border-[#7F899F] hover:border-[#5FDDD0] hover:bg-[#5C657A] shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-all cursor-pointer group rounded"
          >
-            <SettingsIcon className="w-6 h-6 text-slate-500 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
+            <SettingsIcon className="w-6 h-6 text-[#C7CAD1] group-hover:text-[#F7F5F0] transition-colors duration-300" strokeWidth={1.5} />
          </button>
       </div>
 
       {/* Currency Display (Top Right) */}
       <div className="absolute top-8 right-8 z-20 flex items-center gap-3">
-         <div className="text-xs tracking-widest text-slate-500 font-mono">GOLD</div>
-         <span className="text-yellow-500 font-bold tracking-widest text-xl drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]">
-            {Math.floor(upgrades.currency)} <span className="text-sm border-l border-yellow-500/30 pl-2 ml-1">🟡</span>
+         <div className="text-xs tracking-widest text-[#C7CAD1] font-mono">GOLD</div>
+         <span className="text-[#FBCC56] font-bold tracking-widest text-xl drop-shadow-[0_0_10px_rgba(251,204,86,0.5)]">
+            {Math.floor(upgrades.currency)} <span className="text-sm border-l border-[#FBCC56]/30 pl-2 ml-1">🟡</span>
          </span>
       </div>
 
@@ -122,10 +123,10 @@ export default function Hub() {
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-16 flex flex-col items-center z-10"
       >
-        <h1 className="text-5xl font-black italic tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-br from-indigo-300 to-purple-600 drop-shadow-lg uppercase">
+        <h1 className="text-5xl font-black italic tracking-[0.2em] text-[#F7F5F0] drop-shadow-lg uppercase">
            DOT ROGUE
         </h1>
-        <p className="text-sm text-indigo-400/80 mt-3 tracking-[0.5em] font-mono border-b border-indigo-900/50 pb-2 px-12">THE ASCENT</p>
+        <p className="text-sm text-[#F3933F] mt-3 tracking-[0.5em] font-mono border-b border-[#7F899F]/50 pb-2 px-12">THE ASCENT</p>
       </motion.div>
 
       {/* SOUL FORGE Access Button (Left) */}
@@ -137,16 +138,16 @@ export default function Hub() {
             className="group relative flex flex-col items-start p-6 cursor-pointer w-64"
          >
             <div 
-               className="absolute inset-0 bg-[var(--hub-card-bg)]/90 border border-[var(--hub-forge)]/20 skew-x-[-10deg] group-hover:border-[var(--hub-forge)] group-hover:bg-[var(--hub-forge)]/10 transition-all duration-300"
+               className="absolute inset-0 bg-[#373D4A]/90 border border-[#F3933F]/30 skew-x-[-10deg] group-hover:border-[#F3933F] group-hover:bg-[#F3933F]/10 transition-all duration-300"
                style={{
                   boxShadow: isForgeHovered
-                     ? `inset 0 0 30px ${getRgba(FORGE_THEME.primary, 0.4)}`
-                     : `inset 0 0 15px ${getRgba(FORGE_THEME.primary, 0.05)}`
+                     ? `inset 0 0 30px ${getRgba(HUB_THEME.forgeColor, 0.4)}`
+                     : `inset 0 0 15px ${getRgba(HUB_THEME.forgeColor, 0.05)}`
                }}
             ></div>
-            <span className="relative text-[var(--hub-forge)]/70 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[var(--hub-forge)] transition-colors">&gt;&gt; SYSTEM_ACCESS</span>
-            <span className="relative text-white font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-amber-50">SOUL FORGE</span>
-            <div className="relative w-12 h-1 bg-[var(--hub-forge)]/50 mt-3 group-hover:w-full group-hover:bg-[var(--hub-forge)] transition-all duration-500"></div>
+            <span className="relative text-[#F3933F]/80 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[#F3933F] transition-colors">&gt;&gt; SYSTEM_ACCESS</span>
+            <span className="relative text-[#F7F5F0] font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(243,147,63,0.3)] group-hover:text-amber-50">SOUL FORGE</span>
+            <div className="relative w-12 h-1 bg-[#F3933F]/50 mt-3 group-hover:w-full group-hover:bg-[#F3933F] transition-all duration-500"></div>
          </button>
       </div>
 
@@ -159,20 +160,20 @@ export default function Hub() {
             className="group relative flex flex-col items-end p-6 cursor-pointer text-right w-64"
          >
             <div 
-               className="absolute inset-0 bg-[var(--hub-card-bg)]/90 border border-[var(--hub-armory)]/20 skew-x-[10deg] group-hover:border-[var(--hub-armory)] group-hover:bg-[var(--hub-armory)]/10 transition-all duration-300"
+               className="absolute inset-0 bg-[#373D4A]/90 border border-[#5FDDD0]/30 skew-x-[10deg] group-hover:border-[#5FDDD0] group-hover:bg-[#5FDDD0]/10 transition-all duration-300"
                style={{
                   boxShadow: isArmoryHovered
                      ? `inset 0 0 30px ${getRgba(HUB_THEME.armoryColor, 0.4)}`
                      : `inset 0 0 15px ${getRgba(HUB_THEME.armoryColor, 0.05)}`
                }}
             ></div>
-            <span className="relative text-[var(--hub-armory)]/70 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[var(--hub-armory)] transition-colors">LOADOUT &lt;&lt;</span>
-            <span className="relative text-white font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-emerald-50">ARMORY</span>
-            <div className="relative w-12 h-1 bg-[var(--hub-armory)]/50 mt-3 group-hover:w-full group-hover:bg-[var(--hub-armory)] transition-all duration-500"></div>
+            <span className="relative text-[#5FDDD0]/80 font-mono text-[10px] tracking-[0.3em] mb-1 group-hover:text-[#5FDDD0] transition-colors">LOADOUT &lt;&lt;</span>
+            <span className="relative text-[#F7F5F0] font-black uppercase tracking-[0.1em] text-2xl drop-shadow-[0_0_8px_rgba(95,221,208,0.3)] group-hover:text-teal-50">ARMORY</span>
+            <div className="relative w-12 h-1 bg-[#5FDDD0]/50 mt-3 group-hover:w-full group-hover:bg-[#5FDDD0] transition-all duration-500"></div>
          </button>
       </div>
 
-      {/* Main DESCENT Button (Center) */}
+      {/* Main DESCENT Button (Center) - The single CTA per screen per DESIGN.md §4: Primary (Copper #F3933F) */}
       <div className="z-10 flex flex-col items-center mt-24">
          <motion.button 
            onMouseEnter={() => playHoverSfx()}
@@ -180,42 +181,41 @@ export default function Hub() {
              playClickSfx();
              handleStart();
            }}
-           animate={{ boxShadow: ['0 0 50px rgba(99,102,241,0.4)', '0 0 100px rgba(99,102,241,0.8)', '0 0 50px rgba(99,102,241,0.4)'] }}
+           animate={{ boxShadow: ['0 0 40px rgba(243,147,63,0.3)', '0 0 80px rgba(243,147,63,0.6)', '0 0 40px rgba(243,147,63,0.3)'] }}
            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-           className="relative w-[320px] h-[320px] flex flex-col items-center justify-center bg-gradient-to-b from-indigo-500 to-purple-800 border-4 border-indigo-400/50 rounded-full overflow-hidden group cursor-pointer pointer-events-auto"
+           className="relative w-[320px] h-[320px] flex flex-col items-center justify-center bg-gradient-to-b from-[#F5A358] to-[#D87B28] border-4 border-[#F3933F] rounded-full overflow-hidden group cursor-pointer pointer-events-auto shadow-2xl"
          >
-           <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out pointer-events-none" />
-           <span className="relative text-5xl font-black text-white italic tracking-[0.12em] drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] pointer-events-none mb-2">
+           <div className="absolute inset-0 bg-white/15 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out pointer-events-none" />
+           <span className="relative text-5xl font-black text-[#F7F5F0] italic tracking-[0.12em] drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] pointer-events-none mb-2">
              DESCEND
            </span>
-           <span className="relative text-indigo-200 tracking-[0.3em] uppercase text-xs font-bold opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none dropshadow-sm">
+           <span className="relative text-[#F7F5F0]/90 tracking-[0.3em] uppercase text-xs font-bold opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none drop-shadow-sm">
               INITIATE_SEQUENCE
            </span>
          </motion.button>
-
       </div>
 
       {/* Controls Footer (Bottom Right) */}
-      <div className="absolute bottom-8 right-8 z-10 text-slate-500 font-mono text-[10px] tracking-[0.2em] text-right pointer-events-none">
-         <div className="relative p-5 bg-[var(--hub-card-bg)]/60 backdrop-blur-sm border border-slate-800/40 shadow-2xl">
+      <div className="absolute bottom-8 right-8 z-10 text-[#C7CAD1] font-mono text-[10px] tracking-[0.2em] text-right pointer-events-none">
+         <div className="relative p-5 bg-[#373D4A]/80 backdrop-blur-sm border border-[#7F899F]/40 shadow-2xl rounded">
             {/* Corner brackets */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-indigo-500/50"></div>
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-indigo-500/50"></div>
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-indigo-500/50"></div>
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-indigo-500/50"></div>
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#F3933F]/60"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#F3933F]/60"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#F3933F]/60"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#F3933F]/60"></div>
             
             <div className="flex flex-col gap-3 relative z-10">
                <div className="flex justify-between gap-8">
-                  <span className="text-indigo-400">[WASD]</span>
-                  <span className="text-slate-300">MOVE</span>
+                  <span className="text-[#5FDDD0]">[WASD]</span>
+                  <span className="text-[#F7F5F0]">MOVE</span>
                </div>
                <div className="flex justify-between gap-8">
-                  <span className="text-indigo-400">[SPACE]</span>
-                  <span className="text-slate-300">DASH</span>
+                  <span className="text-[#5FDDD0]">[SPACE]</span>
+                  <span className="text-[#F7F5F0]">DASH</span>
                </div>
                <div className="flex justify-between gap-8">
-                  <span className="text-indigo-400">[L-CLICK]</span>
-                  <span className="text-slate-300">FIRE</span>
+                  <span className="text-[#5FDDD0]">[L-CLICK]</span>
+                  <span className="text-[#F7F5F0]">FIRE</span>
                </div>
             </div>
          </div>
@@ -237,115 +237,115 @@ export default function Hub() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setIsSettingsOpen(false)}
-                  className="absolute inset-0 z-40 bg-[var(--hub-card-bg)]/80 backdrop-blur-sm cursor-pointer"
+                  className="absolute inset-0 z-40 bg-[#2B303C]/80 backdrop-blur-sm cursor-pointer"
                />
                <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="absolute z-50 bg-[var(--hub-card-bg)]/95 border border-[var(--hub-border)] shadow-2xl p-8 flex flex-col min-w-[360px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl"
+                  className="absolute z-50 bg-[#373D4A] border border-[#7F899F] shadow-2xl p-8 flex flex-col min-w-[360px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl"
                >
-                  <div className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
-                    <h2 className="text-white text-2xl font-black italic tracking-widest uppercase">CONFIGURATION</h2>
+                  <div className="flex justify-between items-center mb-8 border-b border-[#7F899F]/40 pb-4">
+                    <h2 className="text-[#F7F5F0] text-2xl font-black italic tracking-widest uppercase">CONFIGURATION</h2>
                     <button 
                       onMouseEnter={playHoverSfx}
                       onClick={() => { playClickSfx(); setIsSettingsOpen(false); }} 
-                      className="text-slate-500 hover:text-red-400 hover:border-red-500/50 transition-colors font-mono text-sm border border-slate-800 px-2.5 py-1 cursor-pointer"
+                      className="text-[#C7CAD1] hover:text-[#F47B81] hover:border-[#F47B81]/50 transition-colors font-mono text-sm border border-[#7F899F] px-2.5 py-1 cursor-pointer"
                     >
                       [X]
                     </button>
                   </div>
                   
                   <div className="flex flex-col gap-6 font-mono text-sm">
-                    <div className="flex items-center justify-between text-slate-300 hover:text-white group">
+                    <div className="flex items-center justify-between text-[#C7CAD1] hover:text-[#F7F5F0] group">
                        <span className="tracking-widest capitalize">Damage Numbers</span>
                        <CustomCheckbox checked={settings.showDmgNotif} onChange={(checked) => updateSettings({ showDmgNotif: checked })} />
                     </div>
-                    <div className="flex items-center justify-between text-slate-300 hover:text-white group">
+                    <div className="flex items-center justify-between text-[#C7CAD1] hover:text-[#F7F5F0] group">
                        <span className="tracking-widest capitalize">Item Drop Prompts</span>
                        <CustomCheckbox checked={settings.showDropNotif} onChange={(checked) => updateSettings({ showDropNotif: checked })} />
                     </div>
-                    <div className="flex items-center justify-between text-slate-300 hover:text-white group">
+                    <div className="flex items-center justify-between text-[#C7CAD1] hover:text-[#F7F5F0] group">
                        <span className="tracking-widest capitalize">Auto Skip Wave</span>
                        <CustomCheckbox checked={settings.autoSkipWave} onChange={(checked) => updateSettings({ autoSkipWave: checked })} accent="emerald" />
                     </div>
-                    <div className="flex items-center justify-between text-slate-300 hover:text-white group">
+                    <div className="flex items-center justify-between text-[#C7CAD1] hover:text-[#F7F5F0] group">
                        <span className="tracking-widest capitalize">Exp Gains</span>
                        <CustomCheckbox checked={settings.showExpNotif} onChange={(checked) => updateSettings({ showExpNotif: checked })} />
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-slate-800 flex flex-col gap-4">
-                      <span className="tracking-widest capitalize text-slate-500">Audio Volume</span>
+                    <div className="mt-4 pt-4 border-t border-[#7F899F]/40 flex flex-col gap-4">
+                      <span className="tracking-widest capitalize text-[#C7CAD1]">Audio Volume</span>
                       
                       <div className="flex flex-col gap-2 group/slider">
-                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white">
+                        <div className="flex justify-between items-center text-[#C7CAD1] group-hover/slider:text-[#F7F5F0]">
                           <span className="tracking-widest capitalize text-xs">BGM Volume</span>
-                          <span className="text-xs font-bold text-indigo-400">{settings.bgmVolume ?? 50}%</span>
+                          <span className="text-xs font-bold text-[#F3933F]">{settings.bgmVolume ?? 50}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume1 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                           <input 
                             type="range"
                             min="0"
                             max="100"
                             value={settings.bgmVolume ?? 50}
                             onChange={(e) => updateSettings({ bgmVolume: Number(e.target.value) })}
-                            className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                            className="w-full accent-[#F3933F] bg-[#2B303C] h-1.5 rounded cursor-pointer appearance-none outline-none"
                             style={{
-                              background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.bgmVolume ?? 50}%, #1e293b ${settings.bgmVolume ?? 50}%, #1e293b 100%)`
+                              background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.bgmVolume ?? 50}%, #2B303C ${settings.bgmVolume ?? 50}%, #2B303C 100%)`
                             }}
                           />
-                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume2 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                         </div>
                       </div>
 
                       <div className="flex flex-col gap-2 group/slider">
-                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white">
+                        <div className="flex justify-between items-center text-[#C7CAD1] group-hover/slider:text-[#F7F5F0]">
                           <span className="tracking-widest capitalize text-xs">UI SFX Volume</span>
-                          <span className="text-xs font-bold text-indigo-400">{settings.uiSfxVolume ?? 100}%</span>
+                          <span className="text-xs font-bold text-[#F3933F]">{settings.uiSfxVolume ?? 100}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume1 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                           <input 
                             type="range"
                             min="0"
                             max="100"
                             value={settings.uiSfxVolume ?? 100}
                             onChange={(e) => updateSettings({ uiSfxVolume: Number(e.target.value) })}
-                            className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                            className="w-full accent-[#F3933F] bg-[#2B303C] h-1.5 rounded cursor-pointer appearance-none outline-none"
                             style={{
-                              background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.uiSfxVolume ?? 100}%, #1e293b ${settings.uiSfxVolume ?? 100}%, #1e293b 100%)`
+                              background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.uiSfxVolume ?? 100}%, #2B303C ${settings.uiSfxVolume ?? 100}%, #2B303C 100%)`
                             }}
                           />
-                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume2 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                         </div>
                       </div>
 
                       <div className="flex flex-col gap-2 group/slider">
-                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white">
+                        <div className="flex justify-between items-center text-[#C7CAD1] group-hover/slider:text-[#F7F5F0]">
                           <span className="tracking-widest capitalize text-xs">Gameplay SFX Volume</span>
-                          <span className="text-xs font-bold text-indigo-400">{settings.gameplaySfxVolume ?? 100}%</span>
+                          <span className="text-xs font-bold text-[#F3933F]">{settings.gameplaySfxVolume ?? 100}%</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume1 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                           <input 
                             type="range"
                             min="0"
                             max="100"
                             value={settings.gameplaySfxVolume ?? 100}
                             onChange={(e) => updateSettings({ gameplaySfxVolume: Number(e.target.value) })}
-                            className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                            className="w-full accent-[#F3933F] bg-[#2B303C] h-1.5 rounded cursor-pointer appearance-none outline-none"
                             style={{
-                              background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.gameplaySfxVolume ?? 100}%, #1e293b ${settings.gameplaySfxVolume ?? 100}%, #1e293b 100%)`
+                              background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.gameplaySfxVolume ?? 100}%, #2B303C ${settings.gameplaySfxVolume ?? 100}%, #2B303C 100%)`
                             }}
                           />
-                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
+                          <Volume2 className="w-4 h-4 text-[#C7CAD1] shrink-0" />
                         </div>
                       </div>
                     </div>
                     
-                    <div className="mt-4 pt-4 border-t border-slate-800 flex flex-col gap-4">
-                      <span className="tracking-widest capitalize text-slate-500">Save Management</span>
+                    <div className="mt-4 pt-4 border-t border-[#7F899F]/40 flex flex-col gap-4">
+                      <span className="tracking-widest capitalize text-[#C7CAD1]">Save Management</span>
                       <div className="flex gap-4">
                         <button 
                           onMouseEnter={playHoverSfx}
@@ -365,16 +365,16 @@ export default function Hub() {
                                 URL.revokeObjectURL(url);
                               }
                             } catch (e) {
-                              alert('Failed to export save data.');
+                              // error handled
                             }
                           }}
-                          className="flex-1 py-2 bg-[var(--hub-card-bg)] hover:bg-[#2A2140] text-slate-300 hover:text-white transition-all border border-[var(--hub-border)] hover:border-[#7C3AED] lowercase tracking-widest text-xs rounded cursor-pointer"
+                          className="flex-1 py-2 bg-[#444B5A] hover:bg-[#5C657A] text-[#C7CAD1] hover:text-[#F7F5F0] transition-all border border-[#7F899F] hover:border-[#5FDDD0] lowercase tracking-widest text-xs rounded cursor-pointer"
                         >
                           [export save]
                         </button>
                         <label 
                           onMouseEnter={playHoverSfx}
-                          className="flex-1 py-2 bg-[var(--hub-card-bg)] hover:bg-[#2A2140] text-slate-300 hover:text-white transition-all border border-[var(--hub-border)] hover:border-[#7C3AED] lowercase tracking-widest text-xs cursor-pointer text-center block rounded"
+                          className="flex-1 py-2 bg-[#444B5A] hover:bg-[#5C657A] text-[#C7CAD1] hover:text-[#F7F5F0] transition-all border border-[#7F899F] hover:border-[#5FDDD0] lowercase tracking-widest text-xs cursor-pointer text-center block rounded"
                         >
                           [import save]
                           <input 
@@ -391,10 +391,9 @@ export default function Hub() {
                                     const data = event.target?.result as string;
                                     JSON.parse(data); // validate
                                     localStorage.setItem('roguelike-game-storage', data);
-                                    alert('Save imported successfully. The game will now reload.');
                                     window.location.reload();
                                   } catch (err) {
-                                    alert('Invalid save file.');
+                                    // error handled
                                   }
                                 };
                                 reader.readAsText(file);
@@ -413,3 +412,4 @@ export default function Hub() {
     </div>
   );
 }
+

@@ -1,6 +1,7 @@
 import { Entity, EntityType, GameState, Vector2, Camera } from '../types';
 import { math, uid } from '../utils';
 import { playHitSfx, playPlayerHitSfx } from '../audio';
+import { theme } from '../theme';
 
 export class BaseEntity implements Entity {
   id: string;
@@ -77,12 +78,12 @@ export class BaseEntity implements Entity {
       playHitSfx();
     }
     this.hp -= amt;
-    game.spawnParticles(this.pos, 5, '#F87171');
+    game.spawnParticles(this.pos, 5, theme.accent.danger);
     
     // DMG notification
     const settings = window.gameSettings ?? { showDmgNotif: true };
     if (settings.showDmgNotif) {
-       game.addFloatingText(Math.round(amt).toString(), this.pos, '#fecaca'); // red-200
+       game.addFloatingText(Math.round(amt).toString(), this.pos, theme.accent.danger);
     }
 
     if (this.hp <= 0) {

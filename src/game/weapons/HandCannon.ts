@@ -4,13 +4,14 @@ import { Weapon, WeaponMetadata } from './Weapon';
 import { math, checkCollision } from '../utils';
 import { BaseEntity } from '../entities/BaseEntity';
 import { playHandCannonSfx, playHandCannonChargeSfx } from '../audio';
+import { theme } from '../theme';
 
 const CHARGE_CONFIG = [
-    { damage: 50, radius: 25, color: '#22D3EE' },
-    { damage: 100, radius: 50, color: '#34D399' },
-    { damage: 150, radius: 100, color: '#7C3AED' },
-    { damage: 300, radius: 200, color: '#FBBF24' },
-    { damage: 500, radius: 400, color: '#F87171' },
+    { damage: 50, radius: 25, color: theme.accent.secondary }, // Teal
+    { damage: 100, radius: 50, color: theme.accent.success },   // Success green
+    { damage: 150, radius: 100, color: theme.enemies.elite },   // Steel energy blue
+    { damage: 300, radius: 200, color: theme.accent.gold },     // Gold
+    { damage: 500, radius: 400, color: theme.accent.primary },  // Copper / Max power
 ];
 
 class HandCannonBlast extends BaseEntity {
@@ -160,7 +161,7 @@ export class HandCannon extends Weapon {
         speed: 'Charged (0.3s-1.5s)',
         speedVal: 0.9,
         special: 'Hold to charge. Multi-tier blasts deal extreme AoE damage but use up to 5 Ammo.',
-        color: '#a78bfa',
+        color: theme.accent.primary,
     };
 
     id = 'hand_cannon';
@@ -200,7 +201,7 @@ export class HandCannon extends Weapon {
 
     attack(game: GameState, player: Player) {
         if (this.charges <= 0) {
-            game.addFloatingText('NO CHARGE!', { x: player.pos.x, y: player.pos.y - 30 }, '#F87171');
+            game.addFloatingText('NO CHARGE!', { x: player.pos.x, y: player.pos.y - 30 }, theme.accent.danger);
             return;
         }
 

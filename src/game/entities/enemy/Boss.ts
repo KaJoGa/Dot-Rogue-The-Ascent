@@ -6,11 +6,12 @@ import { BaseEntity } from '../BaseEntity';
 import { Enemy } from './Enemy';
 import { Projectile } from '../Projectile';
 import { Pickup } from '../Pickup';
+import { theme } from '../../theme';
 
 export class Boss extends Enemy {
   type = EntityType.BOSS;
-  color = '#9F1239';
-  auraColor = '#7C3AED';
+  color = '#A63832'; // Base normal hue reduced in lightness ~35-40% per DESIGN.md §5
+  auraColor = theme.accent.primary; // Boss ring/aura in theme's Primary accent (Copper)
   auraRadius = 60;
   abilityTimer = 5;
   invulnTimer = 0;
@@ -201,13 +202,13 @@ export class Boss extends Enemy {
           const blink = Math.floor(this.spawnTimer * 10) % 2 === 0;
 
           if (!this.hasLanded && blink) {
-              ctx.strokeStyle = '#F87171';
+              ctx.strokeStyle = theme.accent.danger;
               ctx.lineWidth = 4;
               ctx.beginPath();
               ctx.arc(0, 0, impactRadius, 0, Math.PI * 2);
               ctx.stroke();
               
-              ctx.fillStyle = '#F87171';
+              ctx.fillStyle = theme.accent.danger;
               ctx.font = 'bold 16px sans-serif';
               ctx.textAlign = 'center';
               ctx.fillText("Warning, Boss Spawning", 0, -impactRadius - 10);
@@ -244,7 +245,7 @@ export class Boss extends Enemy {
               // draw invulnerability shield
               ctx.beginPath();
               ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2);
-              ctx.strokeStyle = '#FBBF24'; // yellow-300
+              ctx.strokeStyle = theme.accent.primary;
               ctx.lineWidth = 3;
               // blink shield
               if (Math.floor(this.spawnTimer * 10) % 2 === 0) {
@@ -264,7 +265,7 @@ export class Boss extends Enemy {
          // draw invulnerability shield
          ctx.beginPath();
          ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2);
-         ctx.strokeStyle = '#FBBF24'; // yellow-300
+         ctx.strokeStyle = theme.accent.primary;
          ctx.lineWidth = 3;
          // blink shield
          if (Math.floor(this.invulnTimer * 10) % 2 === 0) {
@@ -272,7 +273,7 @@ export class Boss extends Enemy {
          }
          
          if (this.fireDelay > 0) { // draw target lines
-             ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)'; // red-500 semi transparent
+             ctx.strokeStyle = 'rgba(244, 123, 129, 0.5)'; // danger red semi transparent
              ctx.lineWidth = 2;
              for (const angle of this.targetAngles) {
                  ctx.beginPath();

@@ -1,5 +1,6 @@
 import { EntityType, GameState, Vector2, Camera } from '../types';
 import { BaseEntity } from './BaseEntity';
+import { theme } from '../theme';
 
 export class WeaponProp extends BaseEntity {
   override type = EntityType.ENVIRONMENT;
@@ -29,19 +30,19 @@ export class WeaponProp extends BaseEntity {
           ctx.shadowBlur = 0;
           
           // Handle
-          ctx.fillStyle = '#1e293b'; 
+          ctx.fillStyle = theme.bg.surfaceDark; 
           ctx.fillRect(-12, -4, 12, 8); 
           
-          // Knucklebow (D-guard)
-          ctx.strokeStyle = '#fbbf24'; 
+          // Knucklebow (D-guard) - Copper accent per DESIGN.md §8
+          ctx.strokeStyle = theme.accent.primary; 
           ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.moveTo(-12, 4);
           ctx.quadraticCurveTo(-6, 16, 2, 6);
           ctx.stroke();
 
-          // Crossguard
-          ctx.fillStyle = '#fbbf24';
+          // Crossguard - Copper accent per DESIGN.md §8
+          ctx.fillStyle = theme.accent.primary;
           ctx.fillRect(-2, -6, 4, 14);
 
           // Curved Sabre Blade
@@ -54,7 +55,7 @@ export class WeaponProp extends BaseEntity {
           ctx.fill();
 
           // Fuller (groove)
-          ctx.strokeStyle = '#94a3b8';
+          ctx.strokeStyle = theme.bg.border;
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.moveTo(6, -1);
@@ -70,7 +71,7 @@ export class WeaponProp extends BaseEntity {
           ctx.scale(4, 4); 
           ctx.globalAlpha = 1.0;
           
-          ctx.shadowColor = '#0ea5e9'; // Cyan/Sky blue glow
+          ctx.shadowColor = theme.accent.secondary; // Teal energy glow per DESIGN.md §8
           ctx.shadowBlur = 15;
           
           // Draw the sleek plasma dagger shape
@@ -83,17 +84,17 @@ export class WeaponProp extends BaseEntity {
           ctx.lineTo(0, -5);
           ctx.closePath();
           
-          ctx.fillStyle = '#bae6fd'; // Bright core
+          ctx.fillStyle = '#84E7DC'; // Bright teal core
           ctx.fill();
           
           // Outline
-          ctx.strokeStyle = '#0284c7';
+          ctx.strokeStyle = '#3AB8AB';
           ctx.lineWidth = 1.5;
           ctx.stroke();
           
           // Handle
           ctx.shadowBlur = 0;
-          ctx.fillStyle = '#1e293b';
+          ctx.fillStyle = theme.bg.surfaceDark;
           ctx.fillRect(-15, -4, 10, 8);
           
           ctx.restore();
@@ -103,25 +104,25 @@ export class WeaponProp extends BaseEntity {
           ctx.rotate(-Math.PI / 4);
           ctx.scale(3.8, 3.8);
           
-          // Long wooden handle
-          ctx.fillStyle = '#3f2a16';
+          // Handle
+          ctx.fillStyle = theme.bg.surfaceDark;
           ctx.fillRect(-8, -4, 48, 8);
-          ctx.strokeStyle = '#1f1309';
+          ctx.strokeStyle = '#2B303C';
           ctx.lineWidth = 1.5;
           ctx.strokeRect(-8, -4, 48, 8);
 
-          // Heavy metal head at the front
-          ctx.shadowColor = '#FBBF24';
+          // Heavy metal head with Copper glow per DESIGN.md §8
+          ctx.shadowColor = theme.accent.primary;
           ctx.shadowBlur = 8;
-          ctx.fillStyle = '#475569';
+          ctx.fillStyle = theme.bg.surface;
           ctx.fillRect(34, -14, 30, 28);
-          ctx.strokeStyle = '#cbd5e1';
+          ctx.strokeStyle = theme.bg.border;
           ctx.lineWidth = 2;
           ctx.strokeRect(34, -14, 30, 28);
 
           // Head bands/highlights
           ctx.shadowBlur = 0;
-          ctx.fillStyle = '#94a3b8';
+          ctx.fillStyle = theme.accent.primary;
           ctx.fillRect(40, -12, 4, 24);
           ctx.fillRect(54, -12, 4, 24);
           
@@ -129,3 +130,4 @@ export class WeaponProp extends BaseEntity {
       }
   }
 }
+

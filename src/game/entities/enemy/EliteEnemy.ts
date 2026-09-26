@@ -4,11 +4,12 @@ import { BaseEntity } from '../BaseEntity';
 import { Enemy } from './Enemy';
 import { Projectile } from '../Projectile';
 import { Pickup } from '../Pickup';
+import { theme } from '../../theme';
 
 export class EliteEnemy extends Enemy {
   type = EntityType.ELITE_ENEMY;
-  color = '#3B82F6';
-  outlineColor = '#93C5FD';
+  color = theme.enemies.elite;
+  outlineColor = '#A3CBFC';
   outlineWidth = 3;
   attackTimer = 0;
 

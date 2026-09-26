@@ -3,11 +3,12 @@ import { math } from '../../utils';
 import { BaseEntity } from '../BaseEntity';
 import { Enemy } from './Enemy';
 import { Pickup } from '../Pickup';
+import { theme } from '../../theme';
 
 export class SpecialEnemy extends Enemy {
   type = EntityType.SPECIAL_ENEMY;
-  color = '#22C55E';
-  outlineColor = '#86EFAC';
+  color = theme.enemies.special;
+  outlineColor = '#8EEBBA';
   outlineWidth = 3;
 
   constructor(pos: Vector2, level: number) {

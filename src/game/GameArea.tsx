@@ -6,6 +6,7 @@ import { Weapon } from './weapons/Weapon';
 import { math, uid } from './utils';
 import { generateLevel } from './LevelGenerator';
 import { playGameOverSfx, stopBossRapidFireLoopSfx } from './audio';
+import { theme } from './theme';
 
 export default function GameArea() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -447,7 +448,7 @@ export default function GameArea() {
 
       // Background tiles
       const isSandboxRender = useStore.getState().isSandbox;
-      ctx.fillStyle = isSandboxRender ? '#f1f5f9' : '#120E1B'; // soft white for sandbox, void background otherwise
+      ctx.fillStyle = isSandboxRender ? '#f1f5f9' : '#373D4A'; // soft white for sandbox, dark slate void background otherwise
       ctx.fillRect(0, 0, view.logicalWidth, view.logicalHeight);
 
       if (!isSandboxRender) {
@@ -463,11 +464,11 @@ export default function GameArea() {
                // Procedural determinism based on coordinates
                const seed = (x * 73856093 ^ y * 19349663) % 100;
                if (seed < 80) {
-                  ctx.fillStyle = '#1F1830'; // normal floor
+                  ctx.fillStyle = theme.bg.background; // normal slate floor #444B5A
                } else if (seed < 95) {
-                  ctx.fillStyle = '#1A1429'; // darker floor
+                  ctx.fillStyle = '#3E4452'; // slightly darker slate tile
                } else {
-                  ctx.fillStyle = '#241B38'; // lighter floor
+                  ctx.fillStyle = '#4B5364'; // slightly lighter slate tile
                }
                
                ctx.fillRect(x - camera.pos.x, y - camera.pos.y, tileSize - 1, tileSize - 1);
@@ -476,7 +477,7 @@ export default function GameArea() {
       }
 
       // Map bounds
-      ctx.strokeStyle = '#f87171';
+      ctx.strokeStyle = theme.bg.border;
       ctx.lineWidth = 4;
       ctx.strokeRect(-camera.pos.x, -camera.pos.y, state.width, state.height);
 
@@ -525,7 +526,7 @@ export default function GameArea() {
           const pct = Math.max(0, Math.min(1, 1 - (p.rangedCooldown / p.maxRangedCooldown)));
           const rangedState = window.currentRangedWeaponState;
           const isHandCannon = rangedState?.id === 'hand_cannon';
-          const chargeColors = ['#22D3EE', '#34D399', '#7C3AED', '#FBBF24', '#F87171'];
+          const chargeColors = [theme.accent.secondary, theme.accent.success, theme.enemies.elite, theme.accent.gold, theme.accent.primary];
           const chargeLevel = isHandCannon ? Math.max(1, Math.min(5, rangedState.charges || 1)) : 1;
           const isFullHandCannon = isHandCannon && rangedState.charges >= rangedState.maxCharges;
           const outlinePulse = isHandCannon && chargeLevel >= 3 ? Math.sin(state.runTime * 28) * 1.5 : 0;
@@ -543,7 +544,7 @@ export default function GameArea() {
           }
           ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
           ctx.fillRect(mX - barW/2 - 1 - Math.max(0, outlinePulse), mY - 1 - Math.max(0, outlinePulse), barW + 2 + Math.max(0, outlinePulse) * 2, barH + 2 + Math.max(0, outlinePulse) * 2);
-          ctx.fillStyle = isHandCannon ? chargeColors[chargeLevel - 1] : '#22D3EE';
+          ctx.fillStyle = isHandCannon ? chargeColors[chargeLevel - 1] : theme.accent.secondary;
           ctx.fillRect(mX - barW/2, mY, barW * pct, barH);
           if (isHandCannon) {
               ctx.strokeStyle = chargeColors[chargeLevel - 1];
@@ -653,7 +654,7 @@ export default function GameArea() {
        generateLevel(state);
        camera.pos.x = Math.max(0, Math.min(Math.max(0, state.width - camera.width), camera.pos.x));
        camera.pos.y = Math.max(0, Math.min(Math.max(0, state.height - camera.height), camera.pos.y));
-       state.addFloatingText(`Stage Cleared! +${reward} Gold`, {x: state.player.pos.x, y: state.player.pos.y - 40}, '#FBBF24');
+       state.addFloatingText(`Stage Cleared! +${reward} Gold`, {x: state.player.pos.x, y: state.player.pos.y - 40}, theme.accent.gold);
     }
 
     animationId = requestAnimationFrame(loop);
@@ -681,10 +682,10 @@ export default function GameArea() {
   }, []);
 
   return (
-    <div className="absolute inset-0 bg-black overflow-hidden">
+    <div className="absolute inset-0 bg-[#373D4A] overflow-hidden">
        <canvas 
           ref={canvasRef} 
-          className="absolute inset-0 cursor-crosshair w-full h-full bg-[#120E1B]"
+          className="absolute inset-0 cursor-crosshair w-full h-full bg-[#444B5A]"
        />
     </div>
   );

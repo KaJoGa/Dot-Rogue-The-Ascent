@@ -22,12 +22,12 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
   };
 
   return (
-    <div className="w-full h-full bg-[#0c0914] text-[#F5F3FF] flex flex-col items-center justify-center relative overflow-hidden select-none">
+    <div className="w-full h-full bg-[#444B5A] text-[#F7F5F0] flex flex-col items-center justify-center relative overflow-hidden select-none">
       {/* Background ambient decorative effects */}
       <div 
         className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle at center, #7C3AED 0%, transparent 70%)',
+          backgroundImage: 'radial-gradient(circle at center, #F3933F 0%, transparent 70%)',
           backgroundSize: '100% 100%'
         }}
       />
@@ -50,16 +50,16 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
               transition={{ duration: 0.35, ease: 'easeOut' }}
               className="flex flex-col items-center"
             >
-              <div className="w-16 h-16 rounded-2xl bg-[#1F1830] border border-[#362A52] flex items-center justify-center shadow-lg shadow-[#7C3AED]/20 mb-6 text-[#7C3AED]">
+              <div className="w-16 h-16 rounded-2xl bg-[#373D4A] border border-[#7F899F] flex items-center justify-center shadow-lg shadow-black/20 mb-6 text-[#F3933F]">
                 <Sparkles className="w-8 h-8" />
               </div>
 
-              <h1 className="text-4xl font-extrabold tracking-wide mb-3 bg-gradient-to-r from-white via-[#F5F3FF] to-[#B4A9CC] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-extrabold tracking-wide mb-3 text-[#F7F5F0]">
                 Ready to play?
               </h1>
 
-              <p className="text-sm text-[#B4A9CC] mb-8 max-w-xs flex items-center justify-center gap-1.5">
-                <Volume2 className="w-4 h-4 text-[#7C3AED] shrink-0" />
+              <p className="text-sm text-[#C7CAD1] mb-8 max-w-xs flex items-center justify-center gap-1.5">
+                <Volume2 className="w-4 h-4 text-[#F3933F] shrink-0" />
                 <span>Audio &amp; music will begin upon entering</span>
               </p>
 
@@ -67,7 +67,7 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
                 <button
                   type="button"
                   onClick={handleYes}
-                  className="flex-1 py-3 px-6 rounded-xl font-bold text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/25 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  className="flex-1 py-3 px-6 rounded-xl font-bold text-base bg-[#F3933F] hover:bg-[#F5A358] text-[#F7F5F0] shadow-lg shadow-orange-500/25 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   Yes
                 </button>
@@ -75,7 +75,7 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
                 <button
                   type="button"
                   onClick={handleNo}
-                  className="flex-1 py-3 px-6 rounded-xl font-medium text-base bg-[#1F1830] hover:bg-[#2B2244] border border-[#362A52] text-[#B4A9CC] hover:text-white transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  className="flex-1 py-3 px-6 rounded-xl font-medium text-base bg-[#373D4A] hover:bg-[#5C657A] border border-[#7F899F] text-[#C7CAD1] hover:text-[#F7F5F0] transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   No
                 </button>
@@ -90,11 +90,11 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
               transition={{ duration: 0.4, ease: 'easeOut' }}
               className="flex flex-col items-center py-6"
             >
-              <h2 className="text-2xl font-bold tracking-wide mb-3 text-[#F5F3FF]">
+              <h2 className="text-2xl font-bold tracking-wide mb-3 text-[#F7F5F0]">
                 Okay, See you next time perhaps.
               </h2>
 
-              <p className="text-sm text-[#B4A9CC] opacity-60 mb-8">
+              <p className="text-sm text-[#C7CAD1] opacity-75 mb-8">
                 Refresh the web if you changed your mind.
               </p>
 
@@ -102,7 +102,7 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
                 <button
                   type="button"
                   onClick={handleReload}
-                  className="inline-flex items-center gap-2 py-2 px-4 rounded-lg text-xs font-semibold bg-[#1F1830] hover:bg-[#2B2244] border border-[#362A52] text-[#B4A9CC] hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 py-2 px-4 rounded-lg text-xs font-semibold bg-[#373D4A] hover:bg-[#5C657A] border border-[#7F899F] text-[#C7CAD1] hover:text-[#F7F5F0] transition-colors cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   Refresh Web
@@ -111,7 +111,7 @@ export default function ReadyPrompt({ onConfirm }: ReadyPromptProps) {
                 <button
                   type="button"
                   onClick={() => setDeclined(false)}
-                  className="inline-flex items-center gap-1.5 py-2 px-4 rounded-lg text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 py-2 px-4 rounded-lg text-xs font-semibold text-[#5FDDD0] hover:text-[#84E7DC] hover:underline cursor-pointer"
                 >
                   Wait, I want to play!
                 </button>

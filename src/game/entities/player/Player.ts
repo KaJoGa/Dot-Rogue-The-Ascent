@@ -8,11 +8,12 @@ import { Weapon } from '../../weapons/Weapon';
 import { PlasmaDagger } from '../../weapons/PlasmaDagger';
 import { HeavyHammer } from '../../weapons/HeavyHammer';
 import { HandCannon } from '../../weapons/HandCannon';
+import { theme } from '../../theme';
 
 export class Player extends BaseEntity {
   type = EntityType.PLAYER;
   radius = 16;
-  color = '#34D399';
+  color = theme.accent.success;
   dashCooldown = 0;
   maxDashCooldown = 1.25;
   dashActiveTimer = 0;
@@ -203,7 +204,7 @@ export class Player extends BaseEntity {
       const pct = 1 - (this.dashCooldown / this.maxDashCooldown);
       ctx.beginPath();
       ctx.arc(this.pos.x - camera.pos.x, this.pos.y - camera.pos.y, this.radius + 8, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct);
-      ctx.strokeStyle = '#34D399';
+      ctx.strokeStyle = theme.accent.success;
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.stroke();
@@ -211,7 +212,7 @@ export class Player extends BaseEntity {
       // draw background ring
       ctx.beginPath();
       ctx.arc(this.pos.x - camera.pos.x, this.pos.y - camera.pos.y, this.radius + 8, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(74, 222, 128, 0.2)';
+      ctx.strokeStyle = 'rgba(81, 205, 143, 0.2)';
       ctx.lineWidth = 3;
       ctx.stroke();
     }

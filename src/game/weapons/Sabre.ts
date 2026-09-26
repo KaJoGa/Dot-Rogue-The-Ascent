@@ -6,6 +6,7 @@ import { playSabreSfx, playSabreReverseSfx } from '../audio';
 import { MeleeSlash } from '../entities/MeleeSlash';
 import { BaseEntity } from '../entities/BaseEntity';
 import { EntityType } from '../types';
+import { theme } from '../theme';
 
 export class Sabre extends Weapon {
     static readonly metadata: WeaponMetadata = {
@@ -18,7 +19,7 @@ export class Sabre extends Weapon {
         speed: 'Normal (0.85s)',
         speedVal: 0.85,
         special: 'Fires dual swing paths when attack speed is capped.',
-        color: '#10b981',
+        color: theme.accent.primary,
     };
 
     id = 'sabre';
@@ -160,22 +161,22 @@ drawAttack(ctx: CanvasRenderingContext2D, progress: number, reach: number, isRev
     // -------------------------------------------------------------------------
     // Handle
     // -------------------------------------------------------------------------
-    ctx.fillStyle = '#1e293b';
+    ctx.fillStyle = theme.bg.surfaceDark;
     ctx.fillRect(-12, -4, 12, 8);
 
     // -------------------------------------------------------------------------
-    // Crossguard
+    // Crossguard - Copper accent per DESIGN.md §8
     // Slightly extended into the handle and blade so it visually locks better
     // -------------------------------------------------------------------------
-    ctx.fillStyle = '#fbbf24';
+    ctx.fillStyle = theme.accent.primary;
     ctx.fillRect(-2.5, -6, 5, 14);
 
     // -------------------------------------------------------------------------
-    // Knucklebow / D-guard
+    // Knucklebow / D-guard - Copper accent per DESIGN.md §8
     // The endpoint is aligned a bit more carefully to the crossguard area
     // -------------------------------------------------------------------------
     ctx.save();
-    ctx.strokeStyle = '#fbbf24';
+    ctx.strokeStyle = theme.accent.primary;
     ctx.lineWidth = 3.2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -265,7 +266,7 @@ drawAttack(ctx: CanvasRenderingContext2D, progress: number, reach: number, isRev
     // Fallback shadow logic: Avoid shadow mapping artifacts on flipped matrices
     if (!isReversed) {
         ctx.shadowBlur = 4;
-        ctx.shadowColor = 'rgba(251, 191, 36, 0.25)';
+        ctx.shadowColor = 'rgba(243, 147, 63, 0.35)'; // Copper glow per DESIGN.md §8
     }
     ctx.fill(bladePath);
     ctx.restore();

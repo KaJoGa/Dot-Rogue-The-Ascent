@@ -5,6 +5,7 @@ import { math } from '../utils';
 import { playPlasmaSfx, playPlasmaCritSfx } from '../audio';
 import { MeleeSlash } from '../entities/MeleeSlash';
 import { BaseEntity } from '../entities/BaseEntity';
+import { theme } from '../theme';
 
 export class PlasmaDagger extends Weapon {
     static readonly metadata: WeaponMetadata = {
@@ -17,7 +18,7 @@ export class PlasmaDagger extends Weapon {
         speed: 'Fast (0.15s)',
         speedVal: 0.15,
         special: 'Agile Momentum (-0.5s dash CD). Weakpoint hits deal 1.9x critical damage.',
-        color: '#34d399',
+        color: theme.accent.secondary,
     };
 
     id = 'plasma_dagger';
@@ -127,10 +128,10 @@ export class PlasmaDagger extends Weapon {
         
         ctx.beginPath();
         ctx.arc(x, y, outlineRadius, angle - this.weakpointIndicatorAngleWidth / 2, angle + this.weakpointIndicatorAngleWidth / 2);
-        ctx.strokeStyle = '#22D3EE'; // Cyan-500
+        ctx.strokeStyle = theme.accent.secondary;
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
-        ctx.shadowColor = '#22D3EE';
+        ctx.shadowColor = theme.accent.secondary;
         ctx.shadowBlur = 8;
         ctx.stroke();
         
@@ -231,7 +232,7 @@ export class PlasmaDagger extends Weapon {
                             if (isCrit) {
                                 playPlasmaCritSfx();
                                 // Add a text pop-up for crit
-                                game.addFloatingText('CRIT!', ent.pos, '#22D3EE', '', Math.floor(appliedDamage));
+                                game.addFloatingText('CRIT!', ent.pos, theme.accent.secondary, '', Math.floor(appliedDamage));
                                 
                                 // Weakpoints regenerate after being hit
                                 ent.weakpoint = Math.floor(Math.random() * 4);
@@ -254,8 +255,8 @@ export class PlasmaDagger extends Weapon {
         // Instead of swinging, it thrusts forward using absolute progress 0->1->0 handled by MeleeSlash
         const thrustDist = progress * reach * 0.8;
         const drawDaggerModel = () => {
-            // Blade Glow
-            ctx.shadowColor = '#0ea5e9'; // Cyan/Sky blue glow
+            // Blade Glow - Teal energy per DESIGN.md §8
+            ctx.shadowColor = theme.accent.secondary; // Teal energy glow #5FDDD0
             ctx.shadowBlur = 15;
             
             // Draw the sleek plasma dagger shape
@@ -268,17 +269,17 @@ export class PlasmaDagger extends Weapon {
             ctx.lineTo(0, -5);
             ctx.closePath();
             
-            ctx.fillStyle = '#bae6fd'; // Bright core
+            ctx.fillStyle = '#84E7DC'; // Bright teal core
             ctx.fill();
             
             // Outline
-            ctx.strokeStyle = '#0284c7';
+            ctx.strokeStyle = '#3AB8AB';
             ctx.lineWidth = 1.5;
             ctx.stroke();
             
             // Handle
             ctx.shadowBlur = 0;
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = theme.bg.surfaceDark;
             ctx.fillRect(-15, -4, 10, 8);
         };
         

@@ -4,11 +4,11 @@ import { motion } from 'motion/react';
 import { playHoverSfx, playClickSfx, playLevelUpSfx } from '../game/audio';
 
 const RARITIES = [
-  { name: 'Common', level: 0, color: 'text-slate-300', bg: 'bg-slate-500/10', border: 'border-slate-500/50', weight: 50 },
-  { name: 'Uncommon', level: 1, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/50', weight: 30 },
-  { name: 'Rare', level: 2, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/50', weight: 16 },
-  { name: 'Epic', level: 3, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/50', weight: 3 },
-  { name: 'Legendary', level: 4, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/50', weight: 1 },
+  { name: 'Common', level: 0, color: 'text-[#C7CAD1]', bg: 'bg-[#5C657A]/40', border: 'border-[#7F899F]/50', weight: 50 },
+  { name: 'Uncommon', level: 1, color: 'text-[#51CD8F]', bg: 'bg-[#51CD8F]/10', border: 'border-[#51CD8F]/40', weight: 30 },
+  { name: 'Rare', level: 2, color: 'text-[#5FDDD0]', bg: 'bg-[#5FDDD0]/10', border: 'border-[#5FDDD0]/40', weight: 16 },
+  { name: 'Epic', level: 3, color: 'text-[#64A6F7]', bg: 'bg-[#64A6F7]/10', border: 'border-[#64A6F7]/40', weight: 3 },
+  { name: 'Legendary', level: 4, color: 'text-[#F3933F]', bg: 'bg-[#F3933F]/15', border: 'border-[#F3933F]/60', weight: 1 },
 ];
 
 function getRandomRarity() {
@@ -86,12 +86,12 @@ export default function LevelUpMenu() {
          initial={{ scale: 0.9, opacity: 0, y: 20 }}
          animate={{ scale: 1, opacity: 1, y: 0 }}
          key={`level-up-${runStats.pendingLevelUps}`} // Force re-animation
-         className="bg-[#1F1830] border border-[#362A52] p-8 rounded-xl max-w-2xl w-full flex flex-col items-center shadow-2xl relative"
+         className="bg-[#373D4A] border border-[#7F899F] p-8 rounded-xl max-w-2xl w-full flex flex-col items-center shadow-2xl relative"
        >
-          <h2 className="text-3xl font-black text-white italic tracking-widest mb-2 uppercase">
+          <h2 className="text-3xl font-black text-[#F7F5F0] italic tracking-widest mb-2 uppercase">
             Level Up! {runStats.pendingLevelUps > 1 ? `(${runStats.pendingLevelUps - 1} pending)` : ''}
           </h2>
-          <p className="text-[#B4A9CC] mb-8 font-mono text-sm">Choose a boost for this run</p>
+          <p className="text-[#C7CAD1] mb-8 font-mono text-sm">Choose a boost for this run</p>
 
           <div className="flex w-full gap-4">
              {selectedOptions.map((opt, i) => (
@@ -102,12 +102,12 @@ export default function LevelUpMenu() {
                      playClickSfx();
                      applyRunUpgrade(opt.id, opt.amount);
                   }}
-                  className={`flex-1 flex flex-col items-center justify-center p-4 ${opt.rarity.bg} hover:bg-[#2A2140] border ${opt.rarity.border} rounded-lg transition-all group relative overflow-hidden text-center`}
+                  className={`flex-1 flex flex-col items-center justify-center p-4 ${opt.rarity.bg} hover:bg-[#5C657A] hover:border-[#5FDDD0] border ${opt.rarity.border} rounded-lg transition-all group relative overflow-hidden text-center cursor-pointer`}
                 >
                    <div className={`mb-1 font-bold tracking-widest uppercase text-xs ${opt.rarity.color}`}>
                      {opt.rarity.name}
                    </div>
-                   <h3 className="text-white font-bold text-lg mb-1">{opt.label}</h3>
+                   <h3 className="text-[#F7F5F0] font-bold text-lg mb-1">{opt.label}</h3>
                    <span className={`font-mono font-bold text-sm ${opt.rarity.color}`}>
                      {opt.amount > 0 ? '+' : ''}{opt.amount}{opt.suffix}
                    </span>

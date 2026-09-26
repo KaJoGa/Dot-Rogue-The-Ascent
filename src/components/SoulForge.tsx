@@ -4,6 +4,7 @@ import { playHoverSfx, playClickSfx } from '../game/audio';
 import { useStore } from '../store';
 import { Lock } from 'lucide-react';
 import { PermanentUpgrades } from '../game/types';
+import { theme } from '../game/theme';
 
 type UpgradeStatKey = keyof Omit<PermanentUpgrades, 'currency'>;
 
@@ -26,11 +27,11 @@ const statConfig: StatConfigItem[] = [
 
 // Define local theme colors to manage them cleanly in one place
 export const FORGE_THEME = {
-  primary: '#e7e716',         // Main color
-  primaryHover: '#a3a33e',    // For active hovers
-  bgDark: '#1F1830',          // Background base
-  muted: '#6B6480',           // Locked elements
-  accentText: '#d2d28a',      
+  primary: theme.accent.primary,         // Copper CTA & Unlocked state
+  primaryHover: '#F5A358',               // For active hovers
+  bgDark: theme.bg.surface,              // Panel fill #5C657A
+  muted: theme.text.locked,              // Locked elements (55% opacity)
+  accentText: theme.text.primary,        // Text primary
 };
 
 // Helper to convert hex to rgba
@@ -80,7 +81,7 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                animate={{ opacity: 1, x: 0 }}
                exit={{ opacity: 0, x: -50 }}
                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-               className="absolute left-0 top-0 bottom-0 w-[420px] z-50 bg-[var(--forge-bg-dark)]/95 border-r border-[var(--forge-primary)]/50 shadow-[30px_0_60px_-10px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col"
+               className="absolute left-0 top-0 bottom-0 w-[420px] z-50 bg-[#373D4A] border-r border-[#F3933F]/50 shadow-[30px_0_60px_-10px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col"
             >
                {/* Internal grid overlay */}
                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
@@ -96,7 +97,7 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                      <button 
                         onMouseEnter={playHoverSfx}
                         onClick={() => { playClickSfx(); onClose(); }}
-                        className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer font-mono text-sm border border-slate-800 hover:border-red-400/50 px-2.5 py-1"
+                        className="text-[#C7CAD1] hover:text-[#F47B81] transition-colors cursor-pointer font-mono text-sm border border-[#7F899F] hover:border-[#F47B81]/50 px-2.5 py-1"
                       >
                         [ESC]
                       </button>
@@ -116,23 +117,23 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                              transition={{ delay: idx * 0.05 }}
                              key={stat.id} 
                              onMouseEnter={() => playHoverSfx()}
-                             className={`relative p-5 flex flex-col gap-4 group transition-all duration-300
-                              ${isMaxed ? 'bg-[var(--forge-bg-dark)] border-l-2 border-cyan-500/70' 
-                                : canAfford ? 'bg-[var(--forge-bg-dark)] border-l-2 border-[var(--forge-primary)]/70 hover:bg-[var(--forge-bg-dark)] hover:translate-x-1' 
-                                : 'bg-[var(--forge-bg-dark)]/90 border-l-2 border-slate-800/40 grayscale-[40%]'}`}
+                             className={`relative p-5 flex flex-col gap-4 group transition-all duration-300 rounded
+                              ${isMaxed ? 'bg-[#5C657A] border-l-2 border-[#5FDDD0]' 
+                                : canAfford ? 'bg-[#5C657A] border-l-2 border-[#F3933F] hover:bg-[#6B758D] hover:translate-x-1' 
+                                : 'bg-[#5C657A]/80 border-l-2 border-[#7F899F]/40 opacity-70'}`}
                            >
                               {/* Inner glow edge */}
                               {canAfford && !isMaxed && <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ boxShadow: `inset 0 0 25px ${getRgba(FORGE_THEME.primary, 0.15)}` }} />}
 
                               <div className="relative flex justify-between items-start">
                                  <div className="flex flex-col gap-1">
-                                    <h3 className={`font-black text-sm tracking-[0.15em] uppercase ${isMaxed ? 'text-cyan-50' : 'text-slate-200'} drop-shadow-sm`}>{stat.label}</h3>
-                                    <div className={`text-[10px] font-mono tracking-widest mt-1 ${isMaxed ? 'text-cyan-400/80' : 'text-slate-500'}`}>EFFECT: {stat.effect}</div>
+                                    <h3 className={`font-black text-sm tracking-[0.15em] uppercase ${isMaxed ? 'text-[#5FDDD0]' : 'text-[#F7F5F0]'} drop-shadow-sm`}>{stat.label}</h3>
+                                    <div className={`text-[10px] font-mono tracking-widest mt-1 ${isMaxed ? 'text-[#5FDDD0]/80' : 'text-[#C7CAD1]'}`}>EFFECT: {stat.effect}</div>
                                  </div>
                                  
                                  {isMaxed ? (
-                                    <div className="px-3 py-1.5 bg-cyan-950/50 border border-cyan-500/40 text-cyan-300 text-[10px] font-mono tracking-[0.2em] relative overflow-hidden shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                                       <div className="absolute inset-0 bg-cyan-400/20 animate-pulse" />
+                                    <div className="px-3 py-1.5 bg-[#5FDDD0]/15 border border-[#5FDDD0]/40 text-[#5FDDD0] text-[10px] font-mono tracking-[0.2em] relative overflow-hidden shadow-[0_0_15px_rgba(95,221,208,0.2)]">
+                                       <div className="absolute inset-0 bg-[#5FDDD0]/20 animate-pulse" />
                                        <span className="relative z-10">[MAXED]</span>
                                     </div>
                                  ) : (
@@ -144,23 +145,23 @@ export default function SoulForge({ onClose }: { onClose: () => void }) {
                                       }}
                                       disabled={!canAfford}
                                       className={`px-3 py-2 text-[10px] font-mono tracking-[0.15em] transition-all cursor-pointer border flex flex-col items-center justify-center gap-1 min-w-[90px] rounded
-                                       ${canAfford ? 'bg-[var(--forge-primary)]/10 border-[var(--forge-primary)]/40 text-[var(--forge-accent-text)] hover:bg-[var(--forge-primary)] hover:text-[#120E1B] hover:border-[var(--forge-primary)] shadow-[0_0_10px_var(--forge-primary-glow-015)] hover:shadow-[0_0_20px_var(--forge-primary-glow-04)]' 
-                                       : 'bg-[var(--forge-bg-dark)] border-[var(--forge-muted)]/20 text-[var(--forge-muted)]/60 cursor-not-allowed flex flex-col items-center justify-center'}`}
+                                       ${canAfford ? 'bg-[#F3933F] text-[#F7F5F0] hover:bg-[#F5A358] border-[#F3933F] shadow-[0_0_10px_var(--forge-primary-glow-015)]' 
+                                       : 'bg-[#373D4A] border-[#7F899F]/40 text-[#C7CAD1]/55 cursor-not-allowed flex flex-col items-center justify-center'}`}
                                     >
-                                      {!canAfford && <Lock className="w-3 h-3 text-[var(--forge-muted)]" />}
-                                      <span className={!canAfford ? 'text-[var(--forge-muted)]/75 font-bold' : ''}>{cost} 🟡</span>
+                                      {!canAfford && <Lock className="w-3 h-3 text-[#C7CAD1]/55" />}
+                                      <span className={!canAfford ? 'text-[#C7CAD1]/55 font-bold' : 'text-[#F7F5F0] font-bold'}>{cost} 🟡</span>
                                     </button>
                                  )}
                               </div>
 
                               {/* Segmented Energy Pips */}
-                              <div className="flex gap-[3px] w-full pt-2 border-t border-slate-800/50 z-10 mt-1">
+                              <div className="flex gap-[3px] w-full pt-2 border-t border-[#7F899F]/30 z-10 mt-1">
                                  {Array.from({ length: stat.maxLevel }).map((_, i) => (
                                     <div 
                                        key={i} 
                                        className={`flex-1 h-1.5 skew-x-[-20deg] transition-all duration-300 ${i < level 
-                                         ? (isMaxed ? 'bg-cyan-400 shadow-[0_0_8px_theme(colors.cyan.400)]' : 'bg-[var(--forge-primary)] shadow-[0_0_8px_var(--forge-primary-glow-06)]') 
-                                         : 'bg-slate-900 border border-slate-800/50'}`} 
+                                         ? (isMaxed ? 'bg-[#5FDDD0] shadow-[0_0_8px_rgba(95,221,208,0.6)]' : 'bg-[#F3933F] shadow-[0_0_8px_var(--forge-primary-glow-06)]') 
+                                         : 'bg-[#2B303C] border border-[#7F899F]/30'}`} 
                                     />
                                  ))}
                               </div>

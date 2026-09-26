@@ -4,6 +4,7 @@ import { Weapon, WeaponMetadata } from './Weapon';
 import { math } from '../utils';
 import { playBowSfx } from '../audio';
 import { Projectile } from '../entities/Projectile';
+import { theme } from '../theme';
 
 export class Bow extends Weapon {
     static readonly metadata: WeaponMetadata = {
@@ -16,7 +17,7 @@ export class Bow extends Weapon {
         speed: 'Medium (0.45s)',
         speedVal: 0.45,
         special: 'Rapid fire on hold. Consumes 1 Ammo per shot.',
-        color: '#cbd5e1',
+        color: theme.accent.secondary,
     };
 
     id = 'bow';
@@ -36,7 +37,7 @@ export class Bow extends Weapon {
 
     attack(game: GameState, player: Player) {
         if (!game.onUseAmmo()) {
-            game.addFloatingText('OUT OF AMMO!', {x: player.pos.x, y: player.pos.y - 30}, '#F87171');
+            game.addFloatingText('OUT OF AMMO!', {x: player.pos.x, y: player.pos.y - 30}, theme.accent.danger);
             return;
         }
         playBowSfx();

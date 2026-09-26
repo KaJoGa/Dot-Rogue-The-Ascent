@@ -3,6 +3,7 @@ import { useStore, GameStage } from '../store';
 import { Pause, Lock, Volume1, Volume2, Infinity as InfinityIcon } from 'lucide-react';
 import { playHoverSfx, playClickSfx } from '../game/audio';
 import { RangedWeaponState } from '../game/types';
+import { theme } from '../game/theme';
 
 interface CheckboxProps {
   checked: boolean;
@@ -11,7 +12,7 @@ interface CheckboxProps {
 }
 
 function CustomCheckbox({ checked, onChange, accent = 'indigo' }: CheckboxProps) {
-  const activeColor = accent === 'emerald' ? 'bg-emerald-500 border-emerald-500' : 'bg-indigo-500 border-indigo-500';
+  const activeColor = accent === 'emerald' ? 'bg-[#51CD8F] border-[#51CD8F]' : 'bg-[#F3933F] border-[#F3933F]';
   return (
     <button
       type="button"
@@ -22,8 +23,8 @@ function CustomCheckbox({ checked, onChange, accent = 'indigo' }: CheckboxProps)
       }}
       className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none select-none
         ${checked 
-          ? `${activeColor} text-[#120E1B]` 
-          : 'bg-[var(--hud-bg-dark)] border-[#4A4066] hover:border-[#7C3AED]'
+          ? `${activeColor} text-[#373D4A]` 
+          : 'bg-[var(--hud-bg-dark)] border-[#7F899F] hover:border-[#5FDDD0]'
         }`}
     >
       {checked && (
@@ -36,10 +37,10 @@ function CustomCheckbox({ checked, onChange, accent = 'indigo' }: CheckboxProps)
 }
 
 const HUD_THEME = {
-  bgDark: '#1F1830',
-  bgAccent: '#2A2140',
-  borderColor: '#362A52',
-  muted: '#6B6480',
+  bgDark: theme.bg.surfaceDark,
+  bgAccent: theme.bg.surface,
+  borderColor: theme.bg.border,
+  muted: theme.text.secondary,
 };
 
 export default function HUD() {
@@ -192,10 +193,10 @@ export default function HUD() {
     <div style={inlineStyles} className="absolute top-0 left-0 w-full h-full pointer-events-none flex flex-col justify-between font-sans">
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto">
          <div className="bg-[var(--hud-bg-dark)]/80 border border-[var(--hud-border-color)] backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2">
-            <span className={`font-mono text-xs uppercase tracking-wider ${isBossStage ? 'text-rose-400' : 'text-emerald-400'}`}>Time</span>
+            <span className={`font-mono text-xs uppercase tracking-wider ${isBossStage ? 'text-[#F47B81]' : 'text-[#51CD8F]'}`}>Time</span>
             {isBossStage ? (
-               <div className="flex items-center gap-1.5 text-rose-400 px-1" title="Boss Encounter: Defeat the boss to proceed">
-                  <InfinityIcon className="w-5 h-5 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse" />
+               <div className="flex items-center gap-1.5 text-[#F47B81] px-1" title="Boss Encounter: Defeat the boss to proceed">
+                  <InfinityIcon className="w-5 h-5 drop-shadow-[0_0_8px_rgba(244,123,129,0.6)] animate-pulse" />
                </div>
             ) : (
                <span className="text-xl font-mono font-bold text-white tracking-widest">{formatTime(remainingTime)}</span>
@@ -203,13 +204,13 @@ export default function HUD() {
          </div>
          {/* Wave Skip Container */}
          {canSkipWave && !showWaveSkipped && (
-            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-indigo-500/40 backdrop-blur-md px-4 py-2 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex flex-col items-center gap-1.5 pointer-events-auto select-none">
+            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-[var(--hud-border-color)] backdrop-blur-md px-4 py-2 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex flex-col items-center gap-1.5 pointer-events-auto select-none">
                <span className="text-xs font-bold text-white tracking-wider">Skip Wave?</span>
                <button 
                   type="button"
                   onClick={triggerSkipWave}
                   onMouseEnter={() => playHoverSfx()}
-                  className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 border border-indigo-400/50 hover:border-indigo-300 px-4 py-1 rounded-lg text-white text-xs font-bold uppercase tracking-widest shadow-[0_0_12px_rgba(99,102,241,0.3)] transition-all cursor-pointer pointer-events-auto"
+                  className="bg-[#F3933F] hover:bg-[#F5A358] active:scale-95 border border-[#F3933F]/70 px-4 py-1 rounded-lg text-[#F7F5F0] text-xs font-bold uppercase tracking-widest shadow-[0_0_12px_rgba(243,147,63,0.3)] transition-all cursor-pointer pointer-events-auto"
                >
                   Yes [e]
                </button>
@@ -221,8 +222,8 @@ export default function HUD() {
 
          {/* Wave Skipped Notification in same position */}
          {showWaveSkipped && (
-            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-emerald-500/50 backdrop-blur-md px-5 py-2.5 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.3)] flex items-center justify-center pointer-events-none select-none">
-               <span className="text-xs font-black text-emerald-400 uppercase tracking-widest animate-pulse">
+            <div className="mt-2 bg-[var(--hud-bg-dark)]/90 border border-[#51CD8F]/50 backdrop-blur-md px-5 py-2.5 rounded-xl shadow-[0_4px_20px_rgba(81,205,143,0.3)] flex items-center justify-center pointer-events-none select-none">
+               <span className="text-xs font-black text-[#51CD8F] uppercase tracking-widest animate-pulse">
                   Wave Skipped!
                </span>
             </div>
@@ -230,12 +231,12 @@ export default function HUD() {
       </div>
       {bossHp && (
          <div className="absolute top-24 left-1/2 -translate-x-1/2 w-96 flex flex-col items-center">
-            <span className="text-[#F87171] font-black italic tracking-widest uppercase mb-1 drop-shadow-md">Boss</span>
+            <span className="text-[#F47B81] font-black italic tracking-widest uppercase mb-1 drop-shadow-md">Boss</span>
             <div className="w-full bg-[var(--hud-bg-accent)] border-2 border-[var(--hud-border-color)] h-6 shrink-0 relative overflow-hidden rounded shadow-lg">
-              <div className="h-full transition-all duration-100 ease-linear" style={{ width: `${Math.max(0, bossHp.current / bossHp.max) * 100}%`, backgroundColor: bossHp.color || '#E24B4A' }} />
-              <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white tracking-widest drop-shadow-md font-mono">
-                {Math.ceil(bossHp.current)} / {bossHp.max}
-              </div>
+               <div className="h-full transition-all duration-100 ease-linear" style={{ width: `${Math.max(0, bossHp.current / bossHp.max) * 100}%`, backgroundColor: bossHp.color || '#F47B81' }} />
+               <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white tracking-widest drop-shadow-md font-mono">
+                 {Math.ceil(bossHp.current)} / {bossHp.max}
+               </div>
             </div>
          </div>
       )}
@@ -247,45 +248,45 @@ export default function HUD() {
              </div>
            )}
            {isSandbox && (
-             <div className="text-2xl font-black italic tracking-tighter text-emerald-400 drop-shadow-md">
+             <div className="text-2xl font-black italic tracking-tighter text-[#51CD8F] drop-shadow-md">
                SANDBOX
              </div>
            )}
 
            {/* Player HP Bar */}
            <div className="w-64 bg-[var(--hud-bg-accent)] border-2 border-[var(--hud-border-color)] h-6 shrink-0 relative overflow-hidden rounded shadow-md pointer-events-auto">
-             <div className="h-full bg-[#F87171] transition-all duration-100 ease-linear" style={{ width: `${hpPct}%` }} />
+             <div className="h-full bg-[#F47B81] transition-all duration-100 ease-linear" style={{ width: `${hpPct}%` }} />
              <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white tracking-widest drop-shadow-md font-mono">
                HP {Math.ceil(playerHp.current)} / {playerHp.max}
              </div>
            </div>
 
            <div 
-             className={`flex flex-col bg-[var(--hud-bg-dark)]/60 rounded font-mono text-slate-300 border border-[var(--hud-border-color)] shadow-sm max-w-max pointer-events-auto cursor-pointer select-none transition-all duration-200 ease-in-out ${statsExpanded ? 'p-3 text-sm gap-2' : 'p-2 text-xs grid grid-cols-1 gap-1'} hover:bg-[var(--hud-bg-accent)] hover:border-[#7C3AED]`}
+             className={`flex flex-col bg-[var(--hud-bg-dark)]/60 rounded font-mono text-slate-300 border border-[var(--hud-border-color)] shadow-sm max-w-max pointer-events-auto cursor-pointer select-none transition-all duration-200 ease-in-out ${statsExpanded ? 'p-3 text-sm gap-2' : 'p-2 text-xs grid grid-cols-1 gap-1'} hover:bg-[var(--hud-bg-accent)] hover:border-[#5FDDD0]`}
              onMouseEnter={playHoverSfx}
              onClick={() => {
                 playClickSfx();
                 setStatsExpanded(prev => !prev);
              }}
            >
-              <div>HP: {formatStat(100 + upgrades.health * 50 + runUpgrades.hp)} {statsExpanded ? <span className="text-slate-500">(base = 100, hub = +{upgrades.health * 50}) </span> : ''}<span className="text-blue-400">({runUpgrades.hp >= 0 ? '+' : ''}{formatStat(runUpgrades.hp)})</span></div>
-              <div>Damage: {formatStat(10 + upgrades.damage * 5 + meleeBaseDamage + runUpgrades.damage + hammerOverflowDamage + hammerSpeedOverflowDamage)} {statsExpanded ? <span className="text-slate-500">(base = 10, hub = +{upgrades.damage * 5}, weapon = +{meleeBaseDamage}{hammerOverflowDamage + hammerSpeedOverflowDamage > 0 ? `, overflow = +${formatStat(hammerOverflowDamage + hammerSpeedOverflowDamage)}` : ''}) </span> : ''}<span className="text-red-400">({runUpgrades.damage >= 0 ? '+' : ''}{formatStat(runUpgrades.damage)})</span></div>
-              <div>Speed: {formatStat(Math.min(speedCap, rawSpeed))} {statsExpanded ? <span className="text-slate-500">(base = 150, hub = +{upgrades.speed * 15}) </span> : ''}<span className="text-green-400">({runUpgrades.speed >= 0 ? '+' : ''}{formatStat(runUpgrades.speed)})</span>{rawSpeed >= speedCap ? ' [MAXED]' : ''}</div>
-              <div>Atk Speed: {formatStat(totalAttackCooldown)}s {statsExpanded ? <span className="text-slate-500">(base = 0.7s, weapon = {meleeAttackSpeedMod >= 0 ? '+' : ''}{formatStat(meleeAttackSpeedMod)}s) </span> : ''}<span className="text-yellow-400">({runUpgrades.atkSpeed > 0 ? '+' : ''}{formatStat(runUpgrades.atkSpeed)}s)</span>{totalAttackCooldown <= attackSpeedCap ? ' [MAXED]' : ''}</div>
-              <div>Melee Range: {formatStat(totalAttackRange)} {statsExpanded ? <span className="text-slate-500">(base = 50, hub = +{(upgrades.range || 0) * 4}, weapon = +{meleeBaseRange}) </span> : ''}<span className="text-purple-400">({(runUpgrades.atkRange || 0) >= 0 ? '+' : ''}{formatStat(runUpgrades.atkRange || 0)})</span>{totalAttackRange >= attackRangeCap ? ' [MAXED]' : ''}</div>
+              <div>HP: {formatStat(100 + upgrades.health * 50 + runUpgrades.hp)} {statsExpanded ? <span className="text-slate-500">(base = 100, hub = +{upgrades.health * 50}) </span> : ''}<span className="text-[#64A6F7]">({runUpgrades.hp >= 0 ? '+' : ''}{formatStat(runUpgrades.hp)})</span></div>
+              <div>Damage: {formatStat(10 + upgrades.damage * 5 + meleeBaseDamage + runUpgrades.damage + hammerOverflowDamage + hammerSpeedOverflowDamage)} {statsExpanded ? <span className="text-slate-500">(base = 10, hub = +{upgrades.damage * 5}, weapon = +{meleeBaseDamage}{hammerOverflowDamage + hammerSpeedOverflowDamage > 0 ? `, overflow = +${formatStat(hammerOverflowDamage + hammerSpeedOverflowDamage)}` : ''}) </span> : ''}<span className="text-[#F47B81]">({runUpgrades.damage >= 0 ? '+' : ''}{formatStat(runUpgrades.damage)})</span></div>
+              <div>Speed: {formatStat(Math.min(speedCap, rawSpeed))} {statsExpanded ? <span className="text-slate-500">(base = 150, hub = +{upgrades.speed * 15}) </span> : ''}<span className="text-[#51CD8F]">({runUpgrades.speed >= 0 ? '+' : ''}{formatStat(runUpgrades.speed)})</span>{rawSpeed >= speedCap ? ' [MAXED]' : ''}</div>
+              <div>Atk Speed: {formatStat(totalAttackCooldown)}s {statsExpanded ? <span className="text-slate-500">(base = 0.7s, weapon = {meleeAttackSpeedMod >= 0 ? '+' : ''}{formatStat(meleeAttackSpeedMod)}s) </span> : ''}<span className="text-[#F3933F]">({runUpgrades.atkSpeed > 0 ? '+' : ''}{formatStat(runUpgrades.atkSpeed)}s)</span>{totalAttackCooldown <= attackSpeedCap ? ' [MAXED]' : ''}</div>
+              <div>Melee Range: {formatStat(totalAttackRange)} {statsExpanded ? <span className="text-slate-500">(base = 50, hub = +{(upgrades.range || 0) * 4}, weapon = +{meleeBaseRange}) </span> : ''}<span className="text-[#5FDDD0]">({(runUpgrades.atkRange || 0) >= 0 ? '+' : ''}{formatStat(runUpgrades.atkRange || 0)})</span>{totalAttackRange >= attackRangeCap ? ' [MAXED]' : ''}</div>
            </div>
         </div>
         
         <div className="text-right flex flex-col gap-2 items-end">
-           <div className="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded border border-yellow-500/50 font-bold shadow-md">
+           <div className="bg-[#FBCC56]/15 text-[#FBCC56] px-3 py-1 rounded border border-[#FBCC56]/50 font-bold shadow-md">
               {runStats.currencyEarned} Gold
            </div>
            
-           <div className={isHeavyHammer ? "bg-[var(--hud-bg-dark)] text-[var(--hud-muted)] px-3 py-1 rounded border border-[var(--hud-muted)]/30 font-bold shadow-md flex items-center gap-1.5" : "bg-orange-500/20 text-orange-400 px-3 py-1 rounded border border-orange-500/50 font-bold shadow-md"}>
+           <div className={isHeavyHammer ? "bg-[var(--hud-bg-dark)] text-[#C7CAD1]/55 px-3 py-1 rounded border border-[#7F899F]/40 font-bold shadow-md flex items-center gap-1.5" : "bg-[#F3933F]/20 text-[#F3933F] px-3 py-1 rounded border border-[#F3933F]/50 font-bold shadow-md"}>
                {isHeavyHammer
                  ? (
                      <>
-                        <Lock className="w-3.5 h-3.5 text-[var(--hud-muted)]" />
+                        <Lock className="w-3.5 h-3.5 text-[#C7CAD1]/55" />
                         <span>Ranged Locked</span>
                      </>
                    )
@@ -309,7 +310,7 @@ export default function HUD() {
         <div className="w-full max-w-xl mx-auto mb-6 p-4 pointer-events-auto">
            <div className="h-6 w-full bg-[var(--hud-bg-dark)] rounded-full border border-[var(--hud-border-color)] shadow-lg relative overflow-hidden group">
               <div 
-                 className="h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-200"
+                 className="h-full bg-gradient-to-r from-[#3AB8AB] to-[#5FDDD0] transition-all duration-200"
                  style={{ width: `${xpPercent}%` }}
               />
               <div className="absolute inset-0 flex justify-center items-center text-xs font-bold text-white drop-shadow-md tracking-wider">
@@ -324,11 +325,11 @@ export default function HUD() {
        <div style={inlineStyles} className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-auto">
           {showQuitConfirm ? (
              <div className="bg-[var(--hud-bg-dark)] border border-[var(--hud-border-color)] p-8 rounded-xl shadow-2xl flex flex-col items-center max-w-sm text-center">
-                <h2 className="text-[#F87171] text-2xl font-black italic mb-2 tracking-widest">GIVE UP?</h2>
-                <p className="text-slate-400 font-mono mb-8 text-sm">All current run progress and temporary upgrades will be lost. Gold collected will be kept.</p>
+                <h2 className="text-[#F47B81] text-2xl font-black italic mb-2 tracking-widest">GIVE UP?</h2>
+                <p className="text-[#C7CAD1] font-mono mb-8 text-sm">All current run progress and temporary upgrades will be lost. Gold collected will be kept.</p>
                 <div className="flex gap-4 w-full">
-                   <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); cancelQuit(); }} className="flex-1 bg-[var(--hud-bg-accent)] hover:bg-[var(--hud-bg-accent)] text-white py-3 rounded-lg font-bold border border-[var(--hud-border-color)] transition">CANCEL</button>
-                   <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); confirmQuit(); }} className="flex-1 bg-[#F87171] hover:bg-red-500 text-white py-3 rounded-lg font-bold border border-red-500 shadow-lg shadow-red-500/20 transition">QUIT</button>
+                   <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); cancelQuit(); }} className="flex-1 bg-[var(--hud-bg-accent)] hover:bg-[#6B758D] text-white py-3 rounded-lg font-bold border border-[var(--hud-border-color)] transition cursor-pointer">CANCEL</button>
+                   <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); confirmQuit(); }} className="flex-1 bg-[#F47B81] hover:bg-[#DF5D64] text-white py-3 rounded-lg font-bold border border-[#F47B81] shadow-lg shadow-red-500/20 transition cursor-pointer">QUIT</button>
                 </div>
              </div>
           ) : showSettings ? (
@@ -361,7 +362,7 @@ export default function HUD() {
                      <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
                          <span className="tracking-widest capitalize">BGM Volume</span>
-                         <span className="font-bold text-indigo-400">{settings.bgmVolume ?? 50}%</span>
+                         <span className="font-bold text-[#F3933F]">{settings.bgmVolume ?? 50}%</span>
                        </div>
                        <div className="flex items-center gap-3">
                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -371,9 +372,9 @@ export default function HUD() {
                            max="100"
                            value={settings.bgmVolume ?? 50}
                            onChange={(e) => updateSettings({ bgmVolume: Number(e.target.value) })}
-                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           className="w-full accent-[#F3933F] bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
                            style={{
-                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.bgmVolume ?? 50}%, #1e293b ${settings.bgmVolume ?? 50}%, #1e293b 100%)`
+                             background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.bgmVolume ?? 50}%, #2B303C ${settings.bgmVolume ?? 50}%, #2B303C 100%)`
                            }}
                          />
                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -383,7 +384,7 @@ export default function HUD() {
                      <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
                          <span className="tracking-widest capitalize">UI SFX Volume</span>
-                         <span className="font-bold text-indigo-400">{settings.uiSfxVolume ?? 100}%</span>
+                         <span className="font-bold text-[#F3933F]">{settings.uiSfxVolume ?? 100}%</span>
                        </div>
                        <div className="flex items-center gap-3">
                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -393,9 +394,9 @@ export default function HUD() {
                            max="100"
                            value={settings.uiSfxVolume ?? 100}
                            onChange={(e) => updateSettings({ uiSfxVolume: Number(e.target.value) })}
-                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           className="w-full accent-[#F3933F] bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
                            style={{
-                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.uiSfxVolume ?? 100}%, #1e293b ${settings.uiSfxVolume ?? 100}%, #1e293b 100%)`
+                             background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.uiSfxVolume ?? 100}%, #2B303C ${settings.uiSfxVolume ?? 100}%, #2B303C 100%)`
                            }}
                          />
                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -405,7 +406,7 @@ export default function HUD() {
                      <div className="flex flex-col gap-1.5 group/slider font-mono w-full">
                        <div className="flex justify-between items-center text-slate-300 group-hover/slider:text-white text-xs">
                          <span className="tracking-widest capitalize">Gameplay SFX Volume</span>
-                         <span className="font-bold text-indigo-400">{settings.gameplaySfxVolume ?? 100}%</span>
+                         <span className="font-bold text-[#F3933F]">{settings.gameplaySfxVolume ?? 100}%</span>
                        </div>
                        <div className="flex items-center gap-3">
                          <Volume1 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -415,9 +416,9 @@ export default function HUD() {
                            max="100"
                            value={settings.gameplaySfxVolume ?? 100}
                            onChange={(e) => updateSettings({ gameplaySfxVolume: Number(e.target.value) })}
-                           className="w-full accent-indigo-500 bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
+                           className="w-full accent-[#F3933F] bg-slate-800 h-1.5 rounded cursor-pointer appearance-none outline-none"
                            style={{
-                             background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${settings.gameplaySfxVolume ?? 100}%, #1e293b ${settings.gameplaySfxVolume ?? 100}%, #1e293b 100%)`
+                             background: `linear-gradient(to right, #F3933F 0%, #F3933F ${settings.gameplaySfxVolume ?? 100}%, #2B303C ${settings.gameplaySfxVolume ?? 100}%, #2B303C 100%)`
                            }}
                          />
                          <Volume2 className="w-4 h-4 text-slate-500 shrink-0" />
@@ -426,14 +427,13 @@ export default function HUD() {
                    </div>
                 </div>
 
-                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); toggleSettings(); }} className="w-full bg-[#7C3AED] hover:opacity-80 text-white py-3 rounded-lg font-bold shadow-lg mb-4 transition uppercase tracking-widest text-sm">Resume</button>
-
-                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); setShowQuitConfirm(true); }} className="w-full bg-[#F87171]/20 hover:bg-[#F87171]/40 text-red-400 py-3 rounded-lg font-bold border border-[var(--hud-border-color)] transition uppercase tracking-widest text-sm">Return to Hub</button>
+                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); toggleSettings(); }} className="w-full bg-[#F3933F] hover:bg-[#F5A358] text-[#F7F5F0] py-3 rounded-lg font-bold shadow-lg mb-4 transition uppercase tracking-widest text-sm cursor-pointer">Resume</button>
+                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); setShowQuitConfirm(true); }} className="w-full bg-[#F47B81]/15 hover:bg-[#F47B81]/30 text-[#F47B81] py-3 rounded-lg font-bold border border-[var(--hud-border-color)] transition uppercase tracking-widest text-sm cursor-pointer">Return to Hub</button>
              </div>
           ) : (
              <div className="bg-[var(--hud-bg-dark)] border border-[var(--hud-border-color)] p-8 rounded-xl shadow-2xl flex flex-col items-center min-w-[300px]">
                 <h2 className="text-white text-3xl font-black italic mb-8 tracking-widest uppercase">Paused</h2>
-                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); setIsPaused(false); }} className="w-full bg-[#7C3AED] hover:opacity-80 text-white py-3 rounded-lg font-bold shadow-lg mb-4 transition uppercase tracking-widest text-sm">Resume</button>
+                <button onMouseEnter={playHoverSfx} onClick={() => { playClickSfx(); setIsPaused(false); }} className="w-full bg-[#F3933F] hover:bg-[#F5A358] text-[#F7F5F0] py-3 rounded-lg font-bold shadow-lg mb-4 transition uppercase tracking-widest text-sm cursor-pointer">Resume</button>
              </div>
           )}
        </div>
