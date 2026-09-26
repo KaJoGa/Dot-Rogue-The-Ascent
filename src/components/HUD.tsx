@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore, GameStage } from '../store';
-import { Pause, Lock, Volume1, Volume2 } from 'lucide-react';
+import { Pause, Lock, Volume1, Volume2, Infinity as InfinityIcon } from 'lucide-react';
 import { playHoverSfx, playClickSfx } from '../game/audio';
 import { RangedWeaponState } from '../game/types';
 
@@ -64,6 +64,7 @@ export default function HUD() {
   const [bossHp, setBossHp] = useState<{ current: number, max: number, color?: string } | null>(null);
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [canSkipWave, setCanSkipWave] = useState<boolean>(false);
+  const [isBossStage, setIsBossStage] = useState<boolean>(false);
   const [showWaveSkipped, setShowWaveSkipped] = useState<boolean>(false);
   const [rangedWeaponState, setRangedWeaponState] = useState<RangedWeaponState | null>(null);
 
@@ -133,6 +134,7 @@ export default function HUD() {
          }
          const canSkipEvt = window.canSkipWave;
          setCanSkipWave(!!canSkipEvt);
+         setIsBossStage(!!window.isBossStage);
          setRangedWeaponState(window.currentRangedWeaponState ?? null);
      }, 100);
      return () => clearInterval(interval);
@@ -190,8 +192,14 @@ export default function HUD() {
     <div style={inlineStyles} className="absolute top-0 left-0 w-full h-full pointer-events-none flex flex-col justify-between font-sans">
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto">
          <div className="bg-[var(--hud-bg-dark)]/80 border border-[var(--hud-border-color)] backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2">
-            <span className="text-emerald-400 font-mono text-xs uppercase tracking-wider">Time</span>
-            <span className="text-xl font-mono font-bold text-white tracking-widest">{formatTime(remainingTime)}</span>
+            <span className={`font-mono text-xs uppercase tracking-wider ${isBossStage ? 'text-rose-400' : 'text-emerald-400'}`}>Time</span>
+            {isBossStage ? (
+               <div className="flex items-center gap-1.5 text-rose-400 px-1" title="Boss Encounter: Defeat the boss to proceed">
+                  <InfinityIcon className="w-5 h-5 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse" />
+               </div>
+            ) : (
+               <span className="text-xl font-mono font-bold text-white tracking-widest">{formatTime(remainingTime)}</span>
+            )}
          </div>
          {/* Wave Skip Container */}
          {canSkipWave && !showWaveSkipped && (

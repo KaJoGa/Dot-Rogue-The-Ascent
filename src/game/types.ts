@@ -137,6 +137,7 @@ declare global {
     currentStageTimeMax?: number;
     currentRunTime?: number;
     canSkipWave?: boolean;
+    isBossStage?: boolean;
     currentRangedWeaponState?: RangedWeaponState | null;
     gameSettings?: GameSettingsState;
     webkitAudioContext?: typeof AudioContext;

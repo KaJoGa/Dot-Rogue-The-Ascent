@@ -183,10 +183,11 @@ export default function GameArea() {
     const handleBlur = () => clearInputState();
 
     const handleSkipStage = () => {
-        if (state.skipForceComplete) return;
-        state.time = state.level % 10 === 0 ? 120 : 60; // trigger the timeout directly
+        const isBoss = state.level % 10 === 0 || useStore.getState().isBossRush;
+        if (state.skipForceComplete || isBoss) return;
+        state.time = 60; // trigger the timeout directly
         state.skipForceComplete = true; // custom flag for force complete
-        state.entities = state.entities.filter(e => e.type !== 1 && e.type !== 3 && e.type !== 6 && e.type !== 7);
+        // Preserve all living enemies on wave skip
         window.dispatchEvent(new CustomEvent('wave-skipped'));
     };
 
@@ -223,15 +224,16 @@ export default function GameArea() {
       state.runTime += dt;
       window.currentRunTime = state.runTime;
       
-      const maxStageTime = state.level % 10 === 0 ? 120 : 60;
-      const remainingTime = Math.max(0, maxStageTime - state.time);
-      window.currentStageTimeRemaining = remainingTime;
-      window.currentStageTimeMax = maxStageTime;
-      window.canSkipWave = remainingTime <= 40 && !useStore.getState().settings?.autoSkipWave;
-
-      // Spawning logic (staggered)
       const isBossRush = useStore.getState().isBossRush;
       const isSandbox = useStore.getState().isSandbox;
+      const isBossStage = !isSandbox && (state.level % 10 === 0 || isBossRush);
+      window.isBossStage = isBossStage;
+
+      const maxStageTime = isBossStage ? 0 : 60;
+      const remainingTime = isBossStage ? 0 : Math.max(0, maxStageTime - state.time);
+      window.currentStageTimeRemaining = remainingTime;
+      window.currentStageTimeMax = maxStageTime;
+      window.canSkipWave = !isBossStage && !isSandbox && remainingTime <= 40 && !useStore.getState().settings?.autoSkipWave;
       const specialSpawnValid = !isBossRush && !isSandbox && state.level > 1 && state.level % 2 === 1 && !stageSpecialEnemySpawned && stageSpecialEnemyRoll;
       const eliteSpawnValid = !isBossRush && !isSandbox && state.level % 3 === 0 && state.level % 10 !== 0 && !stageEliteEnemySpawned;
       
@@ -382,21 +384,23 @@ export default function GameArea() {
           const autoSkip = useStore.getState().settings?.autoSkipWave;
           const canSkip = remainingTime <= 40;
           
-          let skipTriggered = state.skipForceComplete;
-          if (canSkip) {
+          let skipTriggered = !isBossStage && state.skipForceComplete;
+          if (!isBossStage && canSkip) {
              if (state.keys['e'] || state.keys['y'] || autoSkip) {
                 state.keys['e'] = false;
                 state.keys['y'] = false;
                 if (!state.skipForceComplete) {
                    state.skipForceComplete = true;
-                   state.entities = state.entities.filter(e => e.type !== 1 && e.type !== 3 && e.type !== 6 && e.type !== 7);
+                   // Do NOT clear living enemies - keep them alive for the next stage!
                    window.dispatchEvent(new CustomEvent('wave-skipped'));
                 }
                 skipTriggered = true;
              }
           }
-          const timerEnded = remainingTime <= 0;
-          const enemiesCleared = state.enemiesToSpawn <= 0 && activeEnemies === 0;
+          const timerEnded = !isBossStage && remainingTime <= 0;
+          const enemiesCleared = isBossStage 
+              ? state.entities.filter(e => e.type === EntityType.BOSS).length === 0
+              : (state.enemiesToSpawn <= 0 && activeEnemies === 0);
           
           if (enemiesCleared || timerEnded || skipTriggered) {
               advanceLevel();
@@ -661,6 +665,8 @@ export default function GameArea() {
        state.floatingTexts = [];
        window.currentPlayerHp = null;
        window.currentBossHp = null;
+       window.canSkipWave = false;
+       window.isBossStage = false;
        cancelAnimationFrame(animationId);
        resizeObserver.disconnect();
        window.removeEventListener('keydown', handleKeyDown);
