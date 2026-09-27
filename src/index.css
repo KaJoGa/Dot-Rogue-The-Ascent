@@ -103,6 +103,20 @@ body {
   .animate-diagonal-scroll {
     animation: diagonalScroll 1s linear infinite;
   }
+
+  @keyframes seamlessSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-seamless-spin {
+    animation: seamlessSpin 2.5s linear infinite;
+    will-change: transform;
+  }
 }
 
 /* Custom Scrollbar Styles */

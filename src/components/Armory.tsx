@@ -96,6 +96,8 @@ export default function Armory({ onClose }: { onClose: () => void }) {
       (isMeleeHovered && hoveredWeapon !== selectedWeapons.melee) ||
       (isRangedHovered && (selectedWeapons.melee === 'heavy_hammer' || hoveredWeapon !== selectedWeapons.ranged))
     );
+    const isMeleeComparing = Boolean(showComparison && isMeleeHovered);
+    const isRangedComparing = Boolean(showComparison && isRangedHovered);
 
     // Calculate comparison deltas against equipped
     const targetEquipped = isMeleeHovered ? meleeEquippedStats : rangedEquippedStats;
@@ -136,36 +138,90 @@ export default function Armory({ onClose }: { onClose: () => void }) {
                   </div>
 
                   <div className="flex flex-col gap-3">
-                     {/* Melee Slot */}
-                     <div className="bg-[#444B5A] p-3 rounded border border-[#7F899F]/40 flex flex-col gap-1">
-                        <div className="flex justify-between items-center text-[9px] font-mono text-[#C7CAD1] tracking-wider">
-                           <span>MELEE_SLOT</span>
-                           <span className="text-[var(--armory-primary-hover)]">ACTIVE</span>
+                     {/* Melee Slot with Seamless Non-Stop Rotating Gradient Outline Glow */}
+                     <div className={`relative rounded-md overflow-hidden transition-all duration-300 ${isMeleeComparing ? 'shadow-[0_0_18px_rgba(95,221,208,0.5)]' : ''}`}>
+                        {/* Always-running seamless rotating outline layer */}
+                        <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isMeleeComparing ? 'opacity-100' : 'opacity-0'}`}>
+                           <div 
+                              className="w-[500px] h-[500px] shrink-0 animate-seamless-spin pointer-events-none"
+                              style={{
+                                 animation: 'seamlessSpin 2.5s linear infinite',
+                                 willChange: 'transform',
+                                 background: 'conic-gradient(from 0deg, #5FDDD0 0%, #84E7DC 20%, rgba(95,221,208,0.25) 45%, #5FDDD0 70%, #84E7DC 85%, rgba(95,221,208,0.25) 95%, #5FDDD0 100%)'
+                              }}
+                           />
                         </div>
-                        <div className="flex justify-between items-baseline mt-0.5">
-                           <span className="text-[#F7F5F0] font-black uppercase text-xs tracking-wider">{meleeEquippedStats.name}</span>
-                           <span className="text-[9px] font-mono text-[#51CD8F]">DMG: {meleeEquippedStats.damage}</span>
+                        {/* Inner card surface layer */}
+                        <div className={`absolute inset-[1.5px] rounded-[5px] z-0 transition-colors duration-300 ${isMeleeComparing ? 'bg-[#3B4250]' : 'bg-[#444B5A]'}`} />
+                        {/* Default resting border */}
+                        <div className={`absolute inset-0 rounded-md z-0 border transition-opacity duration-300 pointer-events-none ${isMeleeComparing ? 'border-transparent opacity-0' : 'border-[#7F899F]/40 opacity-100'}`} />
+
+                        <div className="relative z-10 p-3 flex flex-col gap-1">
+                           <div className="flex justify-between items-center text-[9px] font-mono tracking-wider">
+                              <span className={isMeleeComparing ? 'text-[#5FDDD0] font-bold transition-colors' : 'text-[#C7CAD1] transition-colors'}>MELEE_SLOT</span>
+                              {isMeleeComparing ? (
+                                 <span className="text-[#5FDDD0] font-bold flex items-center gap-1.5 animate-pulse">
+                                    <span className="relative flex h-2 w-2">
+                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5FDDD0] opacity-75"></span>
+                                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5FDDD0]"></span>
+                                    </span>
+                                    COMPARING
+                                 </span>
+                              ) : (
+                                 <span className="text-[var(--armory-primary-hover)]">ACTIVE</span>
+                              )}
+                           </div>
+                           <div className="flex justify-between items-baseline mt-0.5">
+                              <span className="text-[#F7F5F0] font-black uppercase text-xs tracking-wider">{meleeEquippedStats.name}</span>
+                              <span className="text-[9px] font-mono text-[#51CD8F]">DMG: {meleeEquippedStats.damage}</span>
+                           </div>
+                           <p className="text-[9px] font-mono text-[#C7CAD1] leading-tight mt-1">{meleeEquippedStats.special}</p>
                         </div>
-                        <p className="text-[9px] font-mono text-[#C7CAD1] leading-tight mt-1">{meleeEquippedStats.special}</p>
                      </div>
 
-                     {/* Ranged Slot */}
-                     <div className={`p-3 rounded border flex flex-col gap-1 transition-all duration-300 ${selectedWeapons.melee === 'heavy_hammer' ? 'bg-[#2B303C]/80 border-[#F47B81]/40 opacity-70' : 'bg-[#444B5A] border-[#7F899F]/40'}`}>
-                        <div className="flex justify-between items-center text-[9px] font-mono text-[#C7CAD1] tracking-wider">
-                           <span>RANGED_SLOT</span>
-                           {selectedWeapons.melee === 'heavy_hammer' ? (
-                              <span className="text-[#F47B81]">DISABLED</span>
-                           ) : (
-                              <span className="text-[var(--armory-primary-hover)]">ACTIVE</span>
-                           )}
+                     {/* Ranged Slot with Seamless Non-Stop Rotating Gradient Outline Glow */}
+                     <div className={`relative rounded-md overflow-hidden transition-all duration-300 ${isRangedComparing ? 'shadow-[0_0_18px_rgba(95,221,208,0.5)]' : ''}`}>
+                        {/* Always-running seamless rotating outline layer */}
+                        <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isRangedComparing ? 'opacity-100' : 'opacity-0'}`}>
+                           <div 
+                              className="w-[500px] h-[500px] shrink-0 animate-seamless-spin pointer-events-none"
+                              style={{
+                                 animation: 'seamlessSpin 2.5s linear infinite',
+                                 willChange: 'transform',
+                                 background: 'conic-gradient(from 0deg, #5FDDD0 0%, #84E7DC 20%, rgba(95,221,208,0.25) 45%, #5FDDD0 70%, #84E7DC 85%, rgba(95,221,208,0.25) 95%, #5FDDD0 100%)'
+                              }}
+                           />
                         </div>
-                        <div className="flex justify-between items-baseline mt-0.5">
-                           <span className="text-[#F7F5F0] font-black uppercase text-xs tracking-wider">{rangedEquippedStats.name}</span>
-                           {selectedWeapons.melee !== 'heavy_hammer' && (
-                              <span className="text-[9px] font-mono text-[#51CD8F]">DMG: {rangedEquippedStats.damage}</span>
-                           )}
+                        {/* Inner card surface layer */}
+                        <div className={`absolute inset-[1.5px] rounded-[5px] z-0 transition-colors duration-300 ${isRangedComparing ? 'bg-[#3B4250]' : selectedWeapons.melee === 'heavy_hammer' ? 'bg-[#2B303C]/80' : 'bg-[#444B5A]'}`} />
+                        {/* Default resting border */}
+                        <div className={`absolute inset-0 rounded-md z-0 border transition-all duration-300 pointer-events-none ${isRangedComparing ? 'border-transparent opacity-0' : selectedWeapons.melee === 'heavy_hammer' ? 'border-[#F47B81]/40 opacity-70' : 'border-[#7F899F]/40 opacity-100'}`} />
+
+                        <div className="relative z-10 p-3 flex flex-col gap-1">
+                           <div className="flex justify-between items-center text-[9px] font-mono tracking-wider">
+                              <span className={isRangedComparing ? 'text-[#5FDDD0] font-bold transition-colors' : 'text-[#C7CAD1] transition-colors'}>RANGED_SLOT</span>
+                              {isRangedComparing ? (
+                                 <span className="text-[#5FDDD0] font-bold flex items-center gap-1.5 animate-pulse">
+                                    <span className="relative flex h-2 w-2">
+                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5FDDD0] opacity-75"></span>
+                                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5FDDD0]"></span>
+                                    </span>
+                                    COMPARING
+                                 </span>
+                              ) : selectedWeapons.melee === 'heavy_hammer' ? (
+                                 <span className="text-[#F47B81]">DISABLED</span>
+                              ) : (
+                                 <span className="text-[var(--armory-primary-hover)]">ACTIVE</span>
+                              )}
+                           </div>
+                           <div className="flex justify-between items-baseline mt-0.5">
+                              <span className="text-[#F7F5F0] font-black uppercase text-xs tracking-wider">{rangedEquippedStats.name}</span>
+                              {selectedWeapons.melee !== 'heavy_hammer' && (
+                                 <span className="text-[9px] font-mono text-[#51CD8F]">DMG: {rangedEquippedStats.damage}</span>
+                              )}
+                           </div>
+                           <p className="text-[9px] font-mono text-[#C7CAD1] leading-tight mt-1">{rangedEquippedStats.special}</p>
                         </div>
-                        <p className="text-[9px] font-mono text-[#C7CAD1] leading-tight mt-1">{rangedEquippedStats.special}</p>
                      </div>
                   </div>
                </div>
