@@ -736,10 +736,25 @@ const createBgmAudio = (filename: string, loop: boolean = true): HTMLAudioElemen
     const primaryPath = getMusicPath(filename);
     audio.src = primaryPath;
 
-    let retried = false;
+    let retryStage = 0;
     audio.onerror = () => {
-        if (!retried) {
-            retried = true;
+        if (retryStage === 0) {
+            retryStage = 1;
+            const altExt = primaryPath.endsWith('.webm')
+                ? primaryPath.replace(/\.webm$/, '.mp3')
+                : primaryPath.endsWith('.mp3')
+                ? primaryPath.replace(/\.mp3$/, '.webm')
+                : primaryPath;
+            try {
+                if (audio.src !== new URL(altExt, window.location.href).href) {
+                    audio.src = altExt;
+                    audio.play().catch(() => {});
+                    return;
+                }
+            } catch (e) {}
+        }
+        if (retryStage === 1) {
+            retryStage = 2;
             const fallbackPath = primaryPath.startsWith('/')
                 ? primaryPath.slice(1)
                 : `/${primaryPath}`;
@@ -766,7 +781,7 @@ const playAudioSafely = (audio: HTMLAudioElement) => {
     }
 };
 
-const INGAME_TRACKS = ['ingame_bgm_1.mp3', 'ingame_bgm_3.mp3'];
+const INGAME_TRACKS = ['ingame_bgm_1.webm', 'ingame_bgm_2.webm', 'ingame_bgm_3.webm'];
 let inGamePlaylistFiles: string[] = [];
 
 export const shuffleInGamePlaylist = () => {
@@ -788,7 +803,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
             if (currentBgmType === 'HUB') return;
             stopAllBgm();
             
-            const audio = createBgmAudio('hub_bgm_1.mp3', true);
+            const audio = createBgmAudio('hub_bgm.webm', true);
             currentBgm = audio;
             currentBgmType = 'HUB';
             
@@ -800,7 +815,7 @@ export const updateBgmState = (stage: GameStage, level: number) => {
                 if (currentBgmType === 'BOSS') return;
                 stopAllBgm();
                 
-                const audio = createBgmAudio('boss_bgm_1.mp3', true);
+                const audio = createBgmAudio('boss_bgm_1.webm', true);
                 currentBgm = audio;
                 currentBgmType = 'BOSS';
                 
