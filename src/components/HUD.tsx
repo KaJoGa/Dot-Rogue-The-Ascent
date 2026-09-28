@@ -333,28 +333,41 @@ export default function HUD() {
                 </div>
              </div>
           ) : showSettings ? (
-             <div className="bg-[var(--hud-bg-dark)] border border-[var(--hud-border-color)] p-8 rounded-xl shadow-2xl flex flex-col min-w-[320px] max-w-sm">
+             /* Main Pause Container (Centered) */
+             <div className="relative bg-[var(--hud-bg-dark)] border border-[var(--hud-border-color)] p-8 rounded-xl shadow-2xl flex flex-col min-w-[320px] max-w-sm">
+                {/* Floating Notification Settings Container (Attached to Left of Pause Container) */}
+                <div className="max-md:relative max-md:right-auto max-md:top-auto max-md:mb-3 md:absolute md:right-full md:top-0 md:mr-3.5 bg-[var(--hud-bg-dark)] border border-[var(--hud-border-color)] p-6 rounded-xl shadow-2xl flex flex-col w-[260px]">
+                   <div className="mb-6 border-b border-[#7F899F]/40 pb-4">
+                      <h3 className="text-white text-xl font-black italic tracking-widest uppercase">
+                         Notification
+                      </h3>
+                   </div>
+
+                   <div className="flex flex-col gap-5 font-mono text-sm">
+                      <div className="flex items-center justify-between text-slate-300 hover:text-white group transition-colors">
+                         <span className="tracking-wider">Damage Numbers</span>
+                         <CustomCheckbox checked={settings.showDmgNotif} onChange={(checked) => updateSettings({ showDmgNotif: checked })} />
+                      </div>
+                      <div className="flex items-center justify-between text-slate-300 hover:text-white group transition-colors">
+                         <span className="tracking-wider">Item Drop</span>
+                         <CustomCheckbox checked={settings.showDropNotif} onChange={(checked) => updateSettings({ showDropNotif: checked })} />
+                      </div>
+                      <div className="flex items-center justify-between text-slate-300 hover:text-white group transition-colors">
+                         <span className="tracking-wider">Exp Gains</span>
+                         <CustomCheckbox checked={settings.showExpNotif} onChange={(checked) => updateSettings({ showExpNotif: checked })} />
+                      </div>
+                   </div>
+                </div>
+
                 <div className="flex justify-between items-center mb-6">
                    <h2 className="text-white text-2xl font-black italic tracking-widest uppercase">PAUSE</h2>
                    {/* button removed */}
                 </div>
-                            <div className="flex flex-col gap-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                   <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
-                      <span>Damage Numbers</span>
-                      <CustomCheckbox checked={settings.showDmgNotif} onChange={(checked) => updateSettings({ showDmgNotif: checked })} />
-                   </div>
-                   <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
-                      <span>Item Drop Prompts</span>
-                      <CustomCheckbox checked={settings.showDropNotif} onChange={(checked) => updateSettings({ showDropNotif: checked })} />
-                   </div>
-                   <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
-                      <span>Auto Skip Wave</span>
-                      <CustomCheckbox checked={settings.autoSkipWave} onChange={(checked) => updateSettings({ autoSkipWave: checked })} accent="emerald" />
-                   </div>
-                   <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
-                      <span>Exp Gains</span>
-                      <CustomCheckbox checked={settings.showExpNotif} onChange={(checked) => updateSettings({ showExpNotif: checked })} />
-                   </div>
+                   <div className="flex flex-col gap-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      <div className="flex items-center justify-between text-slate-300 font-semibold text-sm">
+                         <span>Auto Skip Wave</span>
+                         <CustomCheckbox checked={settings.autoSkipWave} onChange={(checked) => updateSettings({ autoSkipWave: checked })} accent="emerald" />
+                      </div>
                    
                    <div className="mt-2 pt-4 border-t border-slate-800 flex flex-col gap-4 w-full">
                      <span className="tracking-widest capitalize text-[11px] text-slate-500 font-bold font-mono">Audio Volume</span>
